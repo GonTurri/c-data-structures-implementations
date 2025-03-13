@@ -3,8 +3,8 @@ CC=gcc
 CFLAGS=-Wall -Wextra -Wpedantic
 
 # Libraries
-LIBS=-lm -lpthread
-
+LIBS=-lm -lcunit
+LFLAGS=-L$(shell brew --prefix cunit)/lib
 # Find source and header files
 SRCS_C := $(shell find src -name "*.c")
 SRCS_H := $(shell find src -name "*.h")
@@ -16,7 +16,7 @@ OBJS := $(patsubst src/%.c,obj/%.o,$(SRCS_C))
 BIN := bin/$(shell basename $(shell pwd))
 
 # Include paths
-IDIRS := -Isrc
+IDIRS := -Isrc -I$(shell brew --prefix cunit)/include
 
 # Ensure directories exist
 $(shell mkdir -p bin)
@@ -27,7 +27,7 @@ $(shell find src -type d | sed 's/src/obj/' | xargs mkdir -p)
 all: $(BIN)
 
 $(BIN): $(OBJS)
-	$(CC) $(CFLAGS) -o $@ $^ $(IDIRS) $(LIBS)
+	$(CC) $(CFLAGS) $(LFLAGS) -o $@ $^ $(IDIRS) $(LIBS)
 
 # Compile C files to object files, preserving directory structure
 obj/%.o: src/%.c $(SRCS_H)

@@ -1,0 +1,375 @@
+#include "linked_list.h"
+
+static t_double_l_node *create_element(void *data);
+
+static bool should_traverse_backwards(t_linked_list *list, int index);
+
+static t_double_l_node *list_traverse_forward(t_linked_list *list, int index);
+
+static t_double_l_node *list_traverse_backwards(t_linked_list *list, int index);
+
+static t_list_error list_internal_get(t_linked_list *list, int index, t_double_l_node **result);
+
+static t_list_error list_internal_find(t_linked_list *list, bool (*condition)(void *), t_double_l_node **result);
+
+static bool index_out_of_bounds(t_linked_list *list, int index);
+
+static void destroy_node(t_double_l_node *node);
+
+static void linked_list_remove_element(t_linked_list *list, t_double_l_node *element);
+
+// static t_double_l_node *linked_list_remove_element_at_index(t_linked_list *list, int index);
+
+t_linked_list *linked_list_create(void)
+{
+    t_linked_list *list = malloc(sizeof(t_linked_list));
+    list->size = 0;
+    list->head = NULL;
+    list->tail = NULL;
+    return list;
+}
+
+int linked_list_size(t_linked_list *list)
+{
+    return list->size;
+}
+
+bool linked_list_is_empty(t_linked_list *list)
+{
+    return linked_list_size(list) == 0;
+}
+
+// al final
+void linked_list_add(t_linked_list *list, void *elem)
+{
+    t_double_l_node *node = create_element(elem);
+    if (linked_list_is_empty(list))
+    {
+        list->head = list->tail = node;
+        list->size++;
+        return;
+    }
+
+    list->tail->next = node;
+    node->prev = list->tail;
+    list->tail = node;
+    list->size++;
+    return;
+}
+
+void linked_list_add_first(t_linked_list *list, void *elem)
+{
+    t_double_l_node *node = create_element(elem);
+    node->next = list->head;
+    if (!linked_list_is_empty(list))
+    {
+        list->head->prev = node;
+    }
+    list->head = node;
+    list->size++;
+    return;
+}
+
+t_list_error linked_list_add_to_index(t_linked_list *list, int index, void *elem)
+{
+    t_double_l_node *temp;
+    t_list_error err = list_internal_get(list, index, &temp);
+
+    if (err != LIST_SUCCESS)
+        return err;
+
+    t_double_l_node *node = create_element(elem);
+
+    node->prev = temp;
+    node->next = temp->next;
+
+    temp->next = node;
+    if (node->next)
+    {
+        node->next->prev = node;
+    }
+
+    return err;
+}
+
+void linked_list_add_all(t_linked_list *self, t_linked_list *other)
+{
+    t_double_l_node *temp = self->head;
+    while (temp)
+    {
+        linked_list_add(other, temp->data);
+        temp = temp->next;
+    }
+
+    return;
+}
+
+t_list_error linked_list_get(t_linked_list *list, int index, void **buffer)
+{
+    t_double_l_node *temp;
+    t_list_error result_error = list_internal_get(list, index, &temp);
+    if (result_error != LIST_SUCCESS)
+    {
+        return result_error;
+    }
+
+    *buffer = temp->data;
+
+    return result_error;
+}
+
+t_list_error linked_list_remove(t_linked_list *list, int index, void **buffer)
+{
+    t_double_l_node *to_delete;
+    t_list_error result_error = list_internal_get(list, index, &to_delete);
+
+    if (result_error != LIST_SUCCESS)
+        return result_error;
+
+    if (to_delete)
+    {
+        if (buffer)
+            *buffer = to_delete->data;
+        linked_list_remove_element(list, to_delete);
+    }
+
+    return result_error;
+}
+
+t_list_error linked_list_remove_and_destroy(t_linked_list *list, int index, void (*destroyer)(void *))
+{
+    t_double_l_node *to_delete;
+    t_list_error result_error = list_internal_get(list, index, &to_delete);
+
+    if (result_error != LIST_SUCCESS)
+        return result_error;
+
+    if (to_delete)
+    {
+        destroyer(to_delete->data);
+        linked_list_remove_element(list, to_delete);
+    }
+
+    return result_error;
+}
+
+t_list_error linked_list_remove_by_condition(t_linked_list *list, bool (*condition)(void *), void **buffer)
+{
+
+    t_double_l_node *to_delete;
+    t_list_error err = list_internal_find(list, condition, &to_delete);
+
+    if (err != LIST_SUCCESS)
+    {
+        return err;
+    }
+
+    if (to_delete)
+    {
+        if (buffer)
+            *buffer = to_delete->data;
+        linked_list_remove_element(list, to_delete);
+    }
+
+    return err;
+}
+
+t_list_error linked_list_remove_and_destroy_by_condition(t_linked_list *list, bool (*condition)(void *), void (*destroyer)(void *))
+{
+
+    t_double_l_node *to_delete;
+    t_list_error err = list_internal_find(list, condition, &to_delete);
+
+    if (err != LIST_SUCCESS)
+        return err;
+
+    if (to_delete)
+    {
+        destroyer(to_delete->data);
+        linked_list_remove_element(list, to_delete);
+    }
+
+    return err;
+}
+
+void linked_list_foreach(t_linked_list *list, void (*closure)(void *))
+{
+    t_double_l_node *temp = list->head;
+    while (temp)
+    {
+        closure(temp->data);
+        temp = temp->next;
+    }
+
+    return;
+}
+
+t_list_error linked_list_find(t_linked_list *list, bool (*condition)(void *), void **buffer)
+{
+    t_double_l_node *temp;
+    t_list_error err = list_internal_find(list, condition, &temp);
+    if (err != LIST_SUCCESS)
+    {
+        return err;
+    }
+
+    *buffer = temp ? temp->data : NULL;
+
+    return err;
+}
+
+void linked_list_clean(t_linked_list *list)
+{
+    while (linked_list_size(list) > 0)
+    {
+        linked_list_remove(list, 0, NULL);
+    }
+}
+
+void linked_list_clean_and_destroy_elements(t_linked_list *list, void (*destroyer)(void *))
+{
+    while (linked_list_size(list) > 0)
+    {
+        linked_list_remove_and_destroy(list, 0, destroyer);
+    }
+}
+
+bool linked_list_any_satisfy(t_linked_list *list, bool (*condition)(void *))
+{
+    t_double_l_node *temp = list->head;
+    while (temp)
+    {
+        if (condition(temp->data))
+            return true;
+        temp = temp->next;
+    }
+    return false;
+}
+
+bool linked_list_all_satisfy(t_linked_list *list, bool (*condition)(void *))
+{
+    t_double_l_node *temp = list->head;
+    while (temp)
+    {
+        if (!condition(temp->data))
+            return false;
+        temp = temp->next;
+    }
+    return true;
+}
+
+static t_double_l_node *list_traverse_forward(t_linked_list *list, int index)
+{
+    t_double_l_node *temp = list->head;
+    for (int i = 0; i < index; i++)
+    {
+        temp = temp->next;
+    }
+    return temp;
+}
+
+static t_double_l_node *list_traverse_backwards(t_linked_list *list, int index)
+{
+    t_double_l_node *temp = list->tail;
+    for (int i = list->size - 1; i > index; i--)
+    {
+        temp = temp->prev;
+    }
+    return temp;
+}
+
+static t_list_error list_internal_get(t_linked_list *list, int index, t_double_l_node **result)
+{
+    if (index_out_of_bounds(list, index))
+        return LIST_INDEX_OUT_OF_BOUNDS;
+    *result = should_traverse_backwards(list, index) ? list_traverse_backwards(list, index) : list_traverse_forward(list, index);
+    return LIST_SUCCESS;
+}
+
+static t_list_error list_internal_find(t_linked_list *list, bool (*condition)(void *), t_double_l_node **result)
+{
+    // if(index_out_of_bounds(list,index)) return LIST_INDEX_OUT_OF_BOUNDS;
+    // *result =  should_traverse_backwards(list, index) ? list_traverse_backwards(list, index) : list_traverse_forward(list, index);
+    // return LIST_SUCCESS;
+
+    t_double_l_node *temp = list->head;
+    while (temp)
+    {
+        if (condition(temp->data))
+        {
+            *result = temp;
+            return LIST_SUCCESS;
+        }
+        temp = temp->next;
+    }
+    return LIST_NOT_FOUND;
+}
+
+static bool should_traverse_backwards(t_linked_list *list, int index)
+{
+    return index >= (linked_list_size(list) / 2);
+}
+
+static t_double_l_node *create_element(void *data)
+{
+    t_double_l_node *node = malloc(sizeof(t_double_l_node));
+    node->data = data;
+    node->next = NULL;
+    node->prev = NULL;
+    return node;
+}
+
+static void destroy_node(t_double_l_node *node)
+{
+    free(node);
+}
+
+// static t_double_l_node *linked_list_remove_element_at_index(t_linked_list *list, int index)
+// {
+//     if (index_out_of_bounds(list, index))
+//         return NULL;
+//     t_double_l_node *temp = list_internal_get(list, index);
+//     return linked_list_remove_element(list,temp);
+// }
+
+static void linked_list_remove_element(t_linked_list *list, t_double_l_node *element)
+{
+
+    if (NULL == element->prev && NULL == element->next)
+    {
+        // list of only one element
+        list->head = list->tail = NULL;
+    }
+
+    else if (NULL == element->prev)
+    {
+        // removing from head
+        list->head = list->head->next;
+        if (list->head)
+            list->head->prev = NULL;
+    }
+
+    else if (NULL == element->next)
+    {
+        // removing from tail
+        list->tail = list->tail->prev;
+        if (list->tail)
+            list->tail->next = NULL;
+    }
+
+    else
+    {
+
+        // element in the middle
+        element->next->prev = element->prev;
+        element->prev->next = element->next;
+    }
+
+    list->size--;
+    destroy_node(element);
+}
+
+static bool index_out_of_bounds(t_linked_list *list, int index)
+{
+    return index >= linked_list_size(list) || index < 0;
+}

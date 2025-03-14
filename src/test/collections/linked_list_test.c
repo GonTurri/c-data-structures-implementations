@@ -118,6 +118,19 @@ static void test_linked_list_remove_by_index(void){
 
 }
 
+static void test_linked_list_clean(void){
+    int x =5, y=10;
+    linked_list_add(list,&x);
+    linked_list_add(list,&y);
+
+    linked_list_clean(list);
+    
+    CU_ASSERT(linked_list_is_empty(list));
+    CU_ASSERT_EQUAL(x,5);
+    CU_ASSERT_EQUAL(y,10);
+
+}
+
 
 static int init_linked_list(void){
     list = linked_list_create();
@@ -137,6 +150,7 @@ CU_pSuite get_linked_list_suite(void){
     CU_add_test(suite, "test of linked_list_find() when found", test_linked_list_find);
     CU_add_test(suite, "test of linked_list_find() when not found", test_linked_list_find_not_found);
     CU_add_test(suite,"test of linked_list_remove()",test_linked_list_remove_by_index);
+    CU_add_test(suite,"test of linked_list_clean()",test_linked_list_clean);  
     return suite;
 }
 

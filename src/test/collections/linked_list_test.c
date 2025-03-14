@@ -2,7 +2,6 @@
 
 static t_linked_list* list;
 
-
 static void add_random_elements(t_linked_list* list){
     int* a = malloc(sizeof(int));
     *a = 5;
@@ -131,6 +130,27 @@ static void test_linked_list_clean(void){
 
 }
 
+static void plus_one(void * elem){
+    int* num = (int*) elem;
+    (*num)++;
+}
+
+static void test_linked_list_foreach(void){
+    add_random_elements(list);
+    linked_list_foreach(list,plus_one);
+
+    int * buf;
+
+    CU_ASSERT(linked_list_get(list,0,(void**) &buf) == LIST_SUCCESS);
+    CU_ASSERT_EQUAL(*buf,6);
+    CU_ASSERT(linked_list_get(list,1,(void**) &buf) == LIST_SUCCESS);
+    CU_ASSERT_EQUAL(*buf,4);
+    CU_ASSERT(linked_list_get(list,2,(void**) &buf) == LIST_SUCCESS);
+    CU_ASSERT_EQUAL(*buf,2);
+
+    remove_random_elements(list);
+}
+
 
 static int init_linked_list(void){
     list = linked_list_create();
@@ -151,6 +171,7 @@ CU_pSuite get_linked_list_suite(void){
     CU_add_test(suite, "test of linked_list_find() when not found", test_linked_list_find_not_found);
     CU_add_test(suite,"test of linked_list_remove()",test_linked_list_remove_by_index);
     CU_add_test(suite,"test of linked_list_clean()",test_linked_list_clean);  
+    CU_add_test(suite,"test of linked_list_foreach()",test_linked_list_foreach);
     return suite;
 }
 

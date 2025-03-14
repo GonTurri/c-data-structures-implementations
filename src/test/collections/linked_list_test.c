@@ -2,6 +2,7 @@
 
 static t_linked_list* list;
 
+
 static void add_random_elements(t_linked_list* list){
     int* a = malloc(sizeof(int));
     *a = 5;
@@ -52,12 +53,37 @@ static void test_linked_list_add_first(void){
 
     linked_list_add_first(list,x);
 
-    linked_list_get(list,0,&buf);
+    linked_list_get(list,0,(void**) &buf);
     CU_ASSERT_EQUAL(*buf,10);
 
     remove_random_elements(list);
 }
 
+
+static bool find_condition_success(void* elem){
+    return *((int*) elem) < 2;
+}
+
+static bool find_condition_failure(void* elem){
+    return *((int*) elem) < 0;
+}
+
+static  void test_linked_list_find(void){
+    int *buf;
+    add_random_elements(list);
+    t_list_error err = linked_list_find(list,find_condition_success, (void**) &buf);
+    CU_ASSERT_EQUAL(err,LIST_SUCCESS);
+    CU_ASSERT_EQUAL(*buf,1);
+    remove_random_elements(list);
+}
+
+static  void test_linked_list_find_not_found(void){
+    int *buf;
+    add_random_elements(list);
+    t_list_error err = linked_list_find(list,find_condition_failure, (void**) &buf);
+    CU_ASSERT_EQUAL(err,LIST_NOT_FOUND);
+    remove_random_elements(list);
+}
 
 // should return LIST_INDEX_OUT_OF_BOUNDS when trying to get and out of bounds position
 
@@ -92,6 +118,7 @@ static void test_linked_list_remove_by_index(void){
 
 }
 
+
 static int init_linked_list(void){
     list = linked_list_create();
     return 0;
@@ -106,7 +133,9 @@ CU_pSuite get_linked_list_suite(void){
     CU_pSuite suite = CU_add_suite("AddTestSuite", init_linked_list, NULL);
     CU_add_test(suite, "test of linked_list_add()", test_linked_list_add);
     CU_add_test(suite, "test of linked_list_add_first()", test_linked_list_add_first);
-    CU_add_test(suite, "test of linked_list_get()", test_linked_list_get_errors);
+    CU_add_test(suite, "test of linked_list_get() when index out of bounds", test_linked_list_get_errors);
+    CU_add_test(suite, "test of linked_list_find() when found", test_linked_list_find);
+    CU_add_test(suite, "test of linked_list_find() when not found", test_linked_list_find_not_found);
     CU_add_test(suite,"test of linked_list_remove()",test_linked_list_remove_by_index);
     return suite;
 }

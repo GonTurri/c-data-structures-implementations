@@ -306,6 +306,18 @@ bool linked_list_all_satisfy(t_linked_list *list, bool (*condition)(void *))
     return true;
 }
 
+
+void list_destroy(t_linked_list* list){
+    linked_list_clean(list);
+    free(list);
+}
+
+void list_destroy_and_destroy_elements(t_linked_list* list,void(*destroyer)(void*)){
+    linked_list_clean_and_destroy_elements(list,destroyer);
+    free(list);
+}
+
+
 static t_double_l_node *list_traverse_forward(t_linked_list *list, int index)
 {
     t_double_l_node *temp = list->head;

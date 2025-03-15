@@ -258,6 +258,27 @@ static void test_linked_list_filter(void)
     remove_random_elements(list);
 }
 
+
+static void* new_plus_one(void* elem){
+    int* num = (int*) elem;
+    int* new = malloc(sizeof(int));
+    *new = *num + 1;
+    return new;
+}
+
+static void test_linked_list_map(void){
+    add_random_elements(list);
+    t_linked_list* mapped = linked_list_map(list,new_plus_one);
+    int* buf;
+    linked_list_get(mapped, 0, (void **)&buf);
+    CU_ASSERT_EQUAL(*buf, 6)
+    linked_list_get(mapped, 1, (void **)&buf);
+    CU_ASSERT_EQUAL(*buf, 4)
+    linked_list_get(mapped, 2, (void **)&buf);
+    CU_ASSERT_EQUAL(*buf, 2)
+    remove_random_elements(list);
+}
+
 static int init_linked_list(void)
 {
     list = linked_list_create();
@@ -288,5 +309,6 @@ CU_pSuite get_linked_list_suite(void)
     CU_add_test(suite, "test of linked_list_all_satisfy()", test_linked_list_all_satisfy);
     CU_add_test(suite, "test of linked_list_duplicate()", test_linked_list_duplicate);
     CU_add_test(suite, "test of linked_list_filter()", test_linked_list_filter);
+    CU_add_test(suite, "test of linked_list_map()", test_linked_list_map);
     return suite;
 }

@@ -77,4 +77,6 @@ t_linked_list *linked_list_duplicate(t_linked_list *list);
 
 t_linked_list *linked_list_filter(t_linked_list *list, bool (*condition)(void *));
 
+t_linked_list* linked_list_map(t_linked_list* list, void*(*mapper)(void*));
+
 #endif

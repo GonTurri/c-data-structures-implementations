@@ -341,6 +341,17 @@ t_linked_list *linked_list_filter(t_linked_list *list, bool (*condition)(void *)
     return result;
 }
 
+t_linked_list* linked_list_map(t_linked_list* list, void*(*mapper)(void*)){
+    t_linked_list *result = linked_list_create();
+    t_double_l_node *temp = list->head;
+    while (temp)
+    {
+        linked_list_add(result, mapper(temp->data));
+        temp = temp->next;
+    }
+    return result;
+}
+
 static t_double_l_node *list_traverse_forward(t_linked_list *list, int index)
 {
     t_double_l_node *temp = list->head;

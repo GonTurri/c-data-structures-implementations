@@ -118,6 +118,61 @@ t_list_error linked_list_get(t_linked_list *list, int index, void **buffer)
     return result_error;
 }
 
+t_list_error linked_list_set(t_linked_list* list, int index, void* new_value ,void** old_value){
+    t_double_l_node *temp;
+    t_list_error result_error = list_internal_get(list, index, &temp);
+    if (result_error != LIST_SUCCESS)
+    {
+        return result_error;
+    }
+    
+    if(old_value) *old_value = temp->data;
+    temp->data = new_value;
+
+    return result_error;
+
+}
+
+t_list_error linked_list_set_and_destroy_element(t_linked_list* list, int index, void* new_value ,void(*destroyer)(void*)){
+    void* old_value;
+    t_list_error err = linked_list_set(list,index,new_value,&old_value);
+    if(err != LIST_SUCCESS) return err;
+
+    destroyer(old_value);
+
+    return err;
+
+
+}
+
+
+t_list_error linked_list_replace_by_condition(t_linked_list* list, bool (*condition)(void*), void* new_value ,void** old_value){
+    t_double_l_node *temp;
+    t_list_error result_error = list_internal_find(list,condition, &temp);
+    if (result_error != LIST_SUCCESS)
+    {
+        return result_error;
+    }
+    
+    if(old_value) *old_value = temp->data;
+    temp->data = new_value;
+
+    return result_error;
+
+}
+
+t_list_error linked_list_replace_and_destroy_by_condition(t_linked_list* list,  bool (*condition)(void*), void* new_value ,void(*destroyer)(void*)){
+    void* old_value;
+    t_list_error err = linked_list_replace_by_condition(list,condition,new_value,&old_value);
+    if(err != LIST_SUCCESS) return err;
+
+    destroyer(old_value);
+
+    return err;
+
+
+}
+
 t_list_error linked_list_remove(t_linked_list *list, int index, void **buffer)
 {
     t_double_l_node *to_delete;
@@ -335,7 +390,7 @@ static void destroy_node(t_double_l_node *node)
 static void linked_list_remove_element(t_linked_list *list, t_double_l_node *element)
 {
 
-    if (NULL == element->prev && NULL == element->next)
+    if (linked_list_size(list) == 1)
     {
         // list of only one element
         list->head = list->tail = NULL;

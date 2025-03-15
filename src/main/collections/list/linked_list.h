@@ -39,6 +39,14 @@ t_list_error linked_list_add_to_index(t_linked_list *list, int index, void *elem
 
 t_list_error linked_list_get(t_linked_list *list, int index, void **buffer);
 
+t_list_error linked_list_set(t_linked_list* list, int index, void* new_value ,void** old_value);
+
+t_list_error linked_list_set_and_destroy_element(t_linked_list* list, int index, void* new_value ,void(*destroyer)(void*));
+
+t_list_error linked_list_replace_by_condition(t_linked_list* list, bool (*condition)(void*), void* new_value ,void** old_value);
+
+t_list_error linked_list_replace_and_destroy_by_condition(t_linked_list* list,  bool (*condition)(void*), void* new_value ,void(*destroyer)(void*));
+
 t_list_error linked_list_remove(t_linked_list *list, int index, void **buffer);
 
 t_list_error linked_list_remove_and_destroy(t_linked_list *list, int index, void (*destroyer)(void *));

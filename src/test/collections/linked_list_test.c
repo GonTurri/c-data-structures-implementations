@@ -151,6 +151,31 @@ static void test_linked_list_foreach(void){
     remove_random_elements(list);
 }
 
+static void test_linked_list_set(void){
+    int* buf;
+    int* x = malloc(sizeof(int));
+    *x = 10;
+    add_random_elements(list);
+    linked_list_set(list,0, x, (void**) &buf);
+    CU_ASSERT_EQUAL(*buf,5);
+    CU_ASSERT(linked_list_get(list,0,(void**) &buf) == LIST_SUCCESS);
+    CU_ASSERT_EQUAL(*buf,10);
+
+
+    remove_random_elements(list);
+}
+
+static void test_linked_list_replace_by_condition(void){
+    int* buf;
+    int* x = malloc(sizeof(int));
+    *x = 10;
+    add_random_elements(list);
+    linked_list_replace_by_condition(list,find_condition_success, x, (void**) &buf);
+    CU_ASSERT_EQUAL(*buf,1);
+    CU_ASSERT(linked_list_find(list,find_condition_success,(void**) &buf) == LIST_NOT_FOUND);
+    remove_random_elements(list);
+}
+
 
 static int init_linked_list(void){
     list = linked_list_create();
@@ -161,12 +186,13 @@ static int clean_linked_list(void){
     linked_list_clean_and_destroy_elements(list,free);
     return 0;
 }
-
 CU_pSuite get_linked_list_suite(void){
-    CU_pSuite suite = CU_add_suite("AddTestSuite", init_linked_list, NULL);
+    CU_pSuite suite = CU_add_suite("Linked list suite", init_linked_list, NULL);
     CU_add_test(suite, "test of linked_list_add()", test_linked_list_add);
     CU_add_test(suite, "test of linked_list_add_first()", test_linked_list_add_first);
     CU_add_test(suite, "test of linked_list_get() when index out of bounds", test_linked_list_get_errors);
+    CU_add_test(suite, "test of linked_list_set()", test_linked_list_set);
+    CU_add_test(suite, "test of linked_list_replace_by_condition()", test_linked_list_replace_by_condition);
     CU_add_test(suite, "test of linked_list_find() when found", test_linked_list_find);
     CU_add_test(suite, "test of linked_list_find() when not found", test_linked_list_find_not_found);
     CU_add_test(suite,"test of linked_list_remove()",test_linked_list_remove_by_index);

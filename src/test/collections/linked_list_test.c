@@ -59,19 +59,20 @@ static void test_linked_list_add_first(void)
     remove_random_elements(list);
 }
 
-static void test_linked_list_add_all(void){
+static void test_linked_list_add_all(void)
+{
     add_random_elements(list);
-    t_linked_list* target = linked_list_create();
+    t_linked_list *target = linked_list_create();
     int *buf;
 
-    linked_list_add_all(list,target);
-    CU_ASSERT_EQUAL(linked_list_size(target),3);
-    linked_list_get(target,0,(void**) &buf);
-    CU_ASSERT_EQUAL(*buf,5);
-    linked_list_get(target,1,(void**) &buf);
-    CU_ASSERT_EQUAL(*buf,3);
-    linked_list_get(target,2,(void**) &buf);
-    CU_ASSERT_EQUAL(*buf,1);
+    linked_list_add_all(list, target);
+    CU_ASSERT_EQUAL(linked_list_size(target), 3);
+    linked_list_get(target, 0, (void **)&buf);
+    CU_ASSERT_EQUAL(*buf, 5);
+    linked_list_get(target, 1, (void **)&buf);
+    CU_ASSERT_EQUAL(*buf, 3);
+    linked_list_get(target, 2, (void **)&buf);
+    CU_ASSERT_EQUAL(*buf, 1);
     remove_random_elements(list);
     linked_list_destroy(target);
 }
@@ -226,32 +227,33 @@ static void test_linked_list_all_satisfy(void)
     remove_random_elements(list);
 }
 
-static void test_linked_list_duplicate(void){
+static void test_linked_list_duplicate(void)
+{
     add_random_elements(list);
-    t_linked_list* dup = linked_list_duplicate(list);
-
+    t_linked_list *dup = linked_list_duplicate(list);
 
     int *buf;
-    CU_ASSERT_EQUAL(linked_list_size(dup),3);
-    linked_list_get(dup,0,(void**) &buf);
-    CU_ASSERT_EQUAL(*buf,5);
-    linked_list_get(dup,1,(void**) &buf);
-    CU_ASSERT_EQUAL(*buf,3);
-    linked_list_get(dup,2,(void**) &buf);
-    CU_ASSERT_EQUAL(*buf,1);
+    CU_ASSERT_EQUAL(linked_list_size(dup), 3);
+    linked_list_get(dup, 0, (void **)&buf);
+    CU_ASSERT_EQUAL(*buf, 5);
+    linked_list_get(dup, 1, (void **)&buf);
+    CU_ASSERT_EQUAL(*buf, 3);
+    linked_list_get(dup, 2, (void **)&buf);
+    CU_ASSERT_EQUAL(*buf, 1);
     remove_random_elements(list);
 
     linked_list_destroy(dup);
     remove_random_elements(list);
 }
 
-static void test_linked_list_filter(void){
+static void test_linked_list_filter(void)
+{
     add_random_elements(list);
-    t_linked_list* filter = linked_list_filter(list,should_not_all_satisfy_condition);
-    CU_ASSERT_EQUAL(linked_list_size(filter),2);
-    int* buf;
-    linked_list_get(filter,1, (void**) &buf);
-    CU_ASSERT_EQUAL(*buf,1)
+    t_linked_list *filter = linked_list_filter(list, should_not_all_satisfy_condition);
+    CU_ASSERT_EQUAL(linked_list_size(filter), 2);
+    int *buf;
+    linked_list_get(filter, 1, (void **)&buf);
+    CU_ASSERT_EQUAL(*buf, 1)
     linked_list_clean(list);
     remove_random_elements(list);
 }

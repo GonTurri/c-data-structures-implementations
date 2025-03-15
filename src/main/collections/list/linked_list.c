@@ -118,59 +118,60 @@ t_list_error linked_list_get(t_linked_list *list, int index, void **buffer)
     return result_error;
 }
 
-t_list_error linked_list_set(t_linked_list* list, int index, void* new_value ,void** old_value){
+t_list_error linked_list_set(t_linked_list *list, int index, void *new_value, void **old_value)
+{
     t_double_l_node *temp;
     t_list_error result_error = list_internal_get(list, index, &temp);
     if (result_error != LIST_SUCCESS)
     {
         return result_error;
     }
-    
-    if(old_value) *old_value = temp->data;
+
+    if (old_value)
+        *old_value = temp->data;
     temp->data = new_value;
 
     return result_error;
-
 }
 
-t_list_error linked_list_set_and_destroy_element(t_linked_list* list, int index, void* new_value ,void(*destroyer)(void*)){
-    void* old_value;
-    t_list_error err = linked_list_set(list,index,new_value,&old_value);
-    if(err != LIST_SUCCESS) return err;
+t_list_error linked_list_set_and_destroy_element(t_linked_list *list, int index, void *new_value, void (*destroyer)(void *))
+{
+    void *old_value;
+    t_list_error err = linked_list_set(list, index, new_value, &old_value);
+    if (err != LIST_SUCCESS)
+        return err;
 
     destroyer(old_value);
 
     return err;
-
-
 }
 
-
-t_list_error linked_list_replace_by_condition(t_linked_list* list, bool (*condition)(void*), void* new_value ,void** old_value){
+t_list_error linked_list_replace_by_condition(t_linked_list *list, bool (*condition)(void *), void *new_value, void **old_value)
+{
     t_double_l_node *temp;
-    t_list_error result_error = list_internal_find(list,condition, &temp);
+    t_list_error result_error = list_internal_find(list, condition, &temp);
     if (result_error != LIST_SUCCESS)
     {
         return result_error;
     }
-    
-    if(old_value) *old_value = temp->data;
+
+    if (old_value)
+        *old_value = temp->data;
     temp->data = new_value;
 
     return result_error;
-
 }
 
-t_list_error linked_list_replace_and_destroy_by_condition(t_linked_list* list,  bool (*condition)(void*), void* new_value ,void(*destroyer)(void*)){
-    void* old_value;
-    t_list_error err = linked_list_replace_by_condition(list,condition,new_value,&old_value);
-    if(err != LIST_SUCCESS) return err;
+t_list_error linked_list_replace_and_destroy_by_condition(t_linked_list *list, bool (*condition)(void *), void *new_value, void (*destroyer)(void *))
+{
+    void *old_value;
+    t_list_error err = linked_list_replace_by_condition(list, condition, new_value, &old_value);
+    if (err != LIST_SUCCESS)
+        return err;
 
     destroyer(old_value);
 
     return err;
-
-
 }
 
 t_list_error linked_list_remove(t_linked_list *list, int index, void **buffer)
@@ -291,7 +292,7 @@ void linked_list_clean_and_destroy_elements(t_linked_list *list, void (*destroye
 
 bool linked_list_any_satisfy(t_linked_list *list, bool (*condition)(void *))
 {
-   return list_internal_find(list,condition,NULL) == LIST_SUCCESS;
+    return list_internal_find(list, condition, NULL) == LIST_SUCCESS;
 }
 
 bool linked_list_all_satisfy(t_linked_list *list, bool (*condition)(void *))
@@ -306,36 +307,39 @@ bool linked_list_all_satisfy(t_linked_list *list, bool (*condition)(void *))
     return true;
 }
 
-
-void linked_list_destroy(t_linked_list* list){
+void linked_list_destroy(t_linked_list *list)
+{
     linked_list_clean(list);
     free(list);
 }
 
-void linked_list_destroy_and_destroy_elements(t_linked_list* list,void(*destroyer)(void*)){
-    linked_list_clean_and_destroy_elements(list,destroyer);
+void linked_list_destroy_and_destroy_elements(t_linked_list *list, void (*destroyer)(void *))
+{
+    linked_list_clean_and_destroy_elements(list, destroyer);
     free(list);
 }
 
-
-t_linked_list* linked_list_duplicate(t_linked_list* list){
-    t_linked_list* dup = linked_list_create();
-    linked_list_add_all(list,dup);
+t_linked_list *linked_list_duplicate(t_linked_list *list)
+{
+    t_linked_list *dup = linked_list_create();
+    linked_list_add_all(list, dup);
     return dup;
 }
 
-t_linked_list* linked_list_filter(t_linked_list* list, bool(*condition)(void*)){
-    t_linked_list* result = linked_list_create();
-    t_double_l_node* temp = list->head;
-    while(temp){
-        if(condition(temp->data)) {
-            linked_list_add(result,temp->data);
+t_linked_list *linked_list_filter(t_linked_list *list, bool (*condition)(void *))
+{
+    t_linked_list *result = linked_list_create();
+    t_double_l_node *temp = list->head;
+    while (temp)
+    {
+        if (condition(temp->data))
+        {
+            linked_list_add(result, temp->data);
         }
         temp = temp->next;
     }
     return result;
 }
-
 
 static t_double_l_node *list_traverse_forward(t_linked_list *list, int index)
 {
@@ -376,7 +380,8 @@ static t_list_error list_internal_find(t_linked_list *list, bool (*condition)(vo
     {
         if (condition(temp->data))
         {
-            if(result) *result = temp;
+            if (result)
+                *result = temp;
             return LIST_SUCCESS;
         }
         temp = temp->next;

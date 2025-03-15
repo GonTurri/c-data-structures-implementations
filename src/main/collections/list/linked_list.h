@@ -73,4 +73,6 @@ void list_destroy(t_linked_list* list);
 
 void list_destroy_and_destroy_elements(t_linked_list* list,void(*destroyer)(void*));
 
+t_linked_list* list_duplicate(t_linked_list* list);
+
 #endif

@@ -318,6 +318,13 @@ void list_destroy_and_destroy_elements(t_linked_list* list,void(*destroyer)(void
 }
 
 
+t_linked_list* list_duplicate(t_linked_list* list){
+    t_linked_list* dup = linked_list_create();
+    linked_list_add_all(list,dup);
+    return dup;
+}
+
+
 static t_double_l_node *list_traverse_forward(t_linked_list *list, int index)
 {
     t_double_l_node *temp = list->head;

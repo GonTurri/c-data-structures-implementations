@@ -73,6 +73,7 @@ static void test_linked_list_add_all(void){
     linked_list_get(target,2,(void**) &buf);
     CU_ASSERT_EQUAL(*buf,1);
     remove_random_elements(list);
+    list_destroy(target);
 }
 
 static bool find_condition_success(void *elem)
@@ -225,6 +226,25 @@ static void test_linked_list_all_satisfy(void)
     remove_random_elements(list);
 }
 
+static void test_linked_list_duplicate(void){
+    add_random_elements(list);
+    t_linked_list* dup = list_duplicate(list);
+
+
+    int *buf;
+    CU_ASSERT_EQUAL(linked_list_size(dup),3);
+    linked_list_get(dup,0,(void**) &buf);
+    CU_ASSERT_EQUAL(*buf,5);
+    linked_list_get(dup,1,(void**) &buf);
+    CU_ASSERT_EQUAL(*buf,3);
+    linked_list_get(dup,2,(void**) &buf);
+    CU_ASSERT_EQUAL(*buf,1);
+    remove_random_elements(list);
+
+    list_destroy(dup);
+    remove_random_elements(list);
+}
+
 static int init_linked_list(void)
 {
     list = linked_list_create();
@@ -253,5 +273,6 @@ CU_pSuite get_linked_list_suite(void)
     CU_add_test(suite, "test of linked_list_foreach()", test_linked_list_foreach);
     CU_add_test(suite, "test of linked_list_any_satisfy()", test_linked_list_any_satisfy);
     CU_add_test(suite, "test of linked_list_all_satisfy()", test_linked_list_all_satisfy);
+    CU_add_test(suite, "test of linked_list_duplicate()", test_linked_list_duplicate);
     return suite;
 }

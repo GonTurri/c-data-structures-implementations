@@ -291,14 +291,7 @@ void linked_list_clean_and_destroy_elements(t_linked_list *list, void (*destroye
 
 bool linked_list_any_satisfy(t_linked_list *list, bool (*condition)(void *))
 {
-    t_double_l_node *temp = list->head;
-    while (temp)
-    {
-        if (condition(temp->data))
-            return true;
-        temp = temp->next;
-    }
-    return false;
+   return list_internal_find(list,condition,NULL) == LIST_SUCCESS;
 }
 
 bool linked_list_all_satisfy(t_linked_list *list, bool (*condition)(void *))
@@ -352,7 +345,7 @@ static t_list_error list_internal_find(t_linked_list *list, bool (*condition)(vo
     {
         if (condition(temp->data))
         {
-            *result = temp;
+            if(result) *result = temp;
             return LIST_SUCCESS;
         }
         temp = temp->next;

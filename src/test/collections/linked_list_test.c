@@ -176,6 +176,14 @@ static void test_linked_list_replace_by_condition(void){
     remove_random_elements(list);
 }
 
+static void test_linked_list_any_satisfy(void){
+    add_random_elements(list);
+
+    CU_ASSERT(linked_list_any_satisfy(list,find_condition_success));
+    CU_ASSERT_FALSE(linked_list_any_satisfy(list,find_condition_failure));
+    remove_random_elements(list);
+}
+
 
 static int init_linked_list(void){
     list = linked_list_create();
@@ -186,6 +194,8 @@ static int clean_linked_list(void){
     linked_list_clean_and_destroy_elements(list,free);
     return 0;
 }
+
+
 CU_pSuite get_linked_list_suite(void){
     CU_pSuite suite = CU_add_suite("Linked list suite", init_linked_list, NULL);
     CU_add_test(suite, "test of linked_list_add()", test_linked_list_add);
@@ -198,6 +208,7 @@ CU_pSuite get_linked_list_suite(void){
     CU_add_test(suite,"test of linked_list_remove()",test_linked_list_remove_by_index);
     CU_add_test(suite,"test of linked_list_clean()",test_linked_list_clean);  
     CU_add_test(suite,"test of linked_list_foreach()",test_linked_list_foreach);
+    CU_add_test(suite,"test of linked_list_any_satisfy()",test_linked_list_any_satisfy);
     return suite;
 }
 

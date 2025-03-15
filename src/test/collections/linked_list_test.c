@@ -73,7 +73,7 @@ static void test_linked_list_add_all(void){
     linked_list_get(target,2,(void**) &buf);
     CU_ASSERT_EQUAL(*buf,1);
     remove_random_elements(list);
-    list_destroy(target);
+    linked_list_destroy(target);
 }
 
 static bool find_condition_success(void *elem)
@@ -228,7 +228,7 @@ static void test_linked_list_all_satisfy(void)
 
 static void test_linked_list_duplicate(void){
     add_random_elements(list);
-    t_linked_list* dup = list_duplicate(list);
+    t_linked_list* dup = linked_list_duplicate(list);
 
 
     int *buf;
@@ -241,7 +241,18 @@ static void test_linked_list_duplicate(void){
     CU_ASSERT_EQUAL(*buf,1);
     remove_random_elements(list);
 
-    list_destroy(dup);
+    linked_list_destroy(dup);
+    remove_random_elements(list);
+}
+
+static void test_linked_list_filter(void){
+    add_random_elements(list);
+    t_linked_list* filter = linked_list_filter(list,should_not_all_satisfy_condition);
+    CU_ASSERT_EQUAL(linked_list_size(filter),2);
+    int* buf;
+    linked_list_get(filter,1, (void**) &buf);
+    CU_ASSERT_EQUAL(*buf,1)
+    linked_list_clean(list);
     remove_random_elements(list);
 }
 
@@ -251,15 +262,15 @@ static int init_linked_list(void)
     return 0;
 }
 
-static int clean_linked_list(void)
+static int destroy_linked_list(void)
 {
-    linked_list_clean_and_destroy_elements(list, free);
+    linked_list_destroy(list);
     return 0;
 }
 
 CU_pSuite get_linked_list_suite(void)
 {
-    CU_pSuite suite = CU_add_suite("Linked list suite", init_linked_list, NULL);
+    CU_pSuite suite = CU_add_suite("Linked list suite", init_linked_list, destroy_linked_list);
     CU_add_test(suite, "test of linked_list_add()", test_linked_list_add);
     CU_add_test(suite, "test of linked_list_add_first()", test_linked_list_add_first);
     CU_add_test(suite, "test of linked_list_add_all()", test_linked_list_add_all);
@@ -274,5 +285,6 @@ CU_pSuite get_linked_list_suite(void)
     CU_add_test(suite, "test of linked_list_any_satisfy()", test_linked_list_any_satisfy);
     CU_add_test(suite, "test of linked_list_all_satisfy()", test_linked_list_all_satisfy);
     CU_add_test(suite, "test of linked_list_duplicate()", test_linked_list_duplicate);
+    CU_add_test(suite, "test of linked_list_filter()", test_linked_list_filter);
     return suite;
 }

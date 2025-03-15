@@ -69,10 +69,12 @@ bool linked_list_all_satisfy(t_linked_list* list, bool(*condition)(void*));
 
 void linked_list_foreach(t_linked_list *list, void (*closure)(void *));
 
-void list_destroy(t_linked_list* list);
+void linked_list_destroy(t_linked_list* list);
 
-void list_destroy_and_destroy_elements(t_linked_list* list,void(*destroyer)(void*));
+void linked_list_destroy_and_destroy_elements(t_linked_list* list,void(*destroyer)(void*));
 
-t_linked_list* list_duplicate(t_linked_list* list);
+t_linked_list* linked_list_duplicate(t_linked_list* list);
+
+t_linked_list* linked_list_filter(t_linked_list* list, bool(*condition)(void*));
 
 #endif

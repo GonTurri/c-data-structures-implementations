@@ -307,21 +307,33 @@ bool linked_list_all_satisfy(t_linked_list *list, bool (*condition)(void *))
 }
 
 
-void list_destroy(t_linked_list* list){
+void linked_list_destroy(t_linked_list* list){
     linked_list_clean(list);
     free(list);
 }
 
-void list_destroy_and_destroy_elements(t_linked_list* list,void(*destroyer)(void*)){
+void linked_list_destroy_and_destroy_elements(t_linked_list* list,void(*destroyer)(void*)){
     linked_list_clean_and_destroy_elements(list,destroyer);
     free(list);
 }
 
 
-t_linked_list* list_duplicate(t_linked_list* list){
+t_linked_list* linked_list_duplicate(t_linked_list* list){
     t_linked_list* dup = linked_list_create();
     linked_list_add_all(list,dup);
     return dup;
+}
+
+t_linked_list* linked_list_filter(t_linked_list* list, bool(*condition)(void*)){
+    t_linked_list* result = linked_list_create();
+    t_double_l_node* temp = list->head;
+    while(temp){
+        if(condition(temp->data)) {
+            linked_list_add(result,temp->data);
+        }
+        temp = temp->next;
+    }
+    return result;
 }
 
 

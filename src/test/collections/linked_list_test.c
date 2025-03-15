@@ -59,6 +59,22 @@ static void test_linked_list_add_first(void)
     remove_random_elements(list);
 }
 
+static void test_linked_list_add_all(void){
+    add_random_elements(list);
+    t_linked_list* target = linked_list_create();
+    int *buf;
+
+    linked_list_add_all(list,target);
+    CU_ASSERT_EQUAL(linked_list_size(target),3);
+    linked_list_get(target,0,(void**) &buf);
+    CU_ASSERT_EQUAL(*buf,5);
+    linked_list_get(target,1,(void**) &buf);
+    CU_ASSERT_EQUAL(*buf,3);
+    linked_list_get(target,2,(void**) &buf);
+    CU_ASSERT_EQUAL(*buf,1);
+    remove_random_elements(list);
+}
+
 static bool find_condition_success(void *elem)
 {
     return *((int *)elem) < 2;
@@ -226,6 +242,7 @@ CU_pSuite get_linked_list_suite(void)
     CU_pSuite suite = CU_add_suite("Linked list suite", init_linked_list, NULL);
     CU_add_test(suite, "test of linked_list_add()", test_linked_list_add);
     CU_add_test(suite, "test of linked_list_add_first()", test_linked_list_add_first);
+    CU_add_test(suite, "test of linked_list_add_all()", test_linked_list_add_all);
     CU_add_test(suite, "test of linked_list_get() when index out of bounds", test_linked_list_get_errors);
     CU_add_test(suite, "test of linked_list_set()", test_linked_list_set);
     CU_add_test(suite, "test of linked_list_replace_by_condition()", test_linked_list_replace_by_condition);

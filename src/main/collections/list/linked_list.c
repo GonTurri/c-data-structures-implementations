@@ -370,6 +370,12 @@ void linked_list_sort(t_linked_list* list, bool(*comparator)(void*, void*)){
     adjust_tail(list);
 }
 
+t_linked_list*  linked_list_sorted(t_linked_list* list, bool(*comparator)(void*,void*)){
+    t_linked_list* sorted = linked_list_duplicate(list);
+    linked_list_sort(sorted,comparator);
+    return sorted;
+}
+
 static t_double_l_node *list_traverse_forward(t_linked_list *list, int index)
 {
     t_double_l_node *temp = list->head;

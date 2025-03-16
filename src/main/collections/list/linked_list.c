@@ -18,7 +18,14 @@ static void destroy_node(t_double_l_node *node);
 
 static void linked_list_remove_element(t_linked_list *list, t_double_l_node *element);
 
-// static t_double_l_node *linked_list_remove_element_at_index(t_linked_list *list, int index);
+static void adjust_tail(t_linked_list* list);
+
+static t_double_l_node* split_linked_list(t_double_l_node* head);
+
+static t_double_l_node* merge_linked_lists(t_double_l_node* a,t_double_l_node* b, bool(*comparator)(void*, void*));
+
+static t_double_l_node* merge_sort(t_double_l_node* head,bool(*comparator)(void*, void*));
+
 
 t_linked_list *linked_list_create(void)
 {
@@ -352,6 +359,17 @@ t_linked_list* linked_list_map(t_linked_list* list, void*(*mapper)(void*)){
     return result;
 }
 
+
+
+
+void linked_list_sort(t_linked_list* list, bool(*comparator)(void*, void*)){
+    if (!list) return;
+
+    list->head = merge_sort(list->head,comparator);
+
+    adjust_tail(list);
+}
+
 static t_double_l_node *list_traverse_forward(t_linked_list *list, int index)
 {
     t_double_l_node *temp = list->head;
@@ -382,10 +400,6 @@ static t_list_error list_internal_get(t_linked_list *list, int index, t_double_l
 
 static t_list_error list_internal_find(t_linked_list *list, bool (*condition)(void *), t_double_l_node **result)
 {
-    // if(index_out_of_bounds(list,index)) return LIST_INDEX_OUT_OF_BOUNDS;
-    // *result =  should_traverse_backwards(list, index) ? list_traverse_backwards(list, index) : list_traverse_forward(list, index);
-    // return LIST_SUCCESS;
-
     t_double_l_node *temp = list->head;
     while (temp)
     {
@@ -418,14 +432,6 @@ static void destroy_node(t_double_l_node *node)
 {
     free(node);
 }
-
-// static t_double_l_node *linked_list_remove_element_at_index(t_linked_list *list, int index)
-// {
-//     if (index_out_of_bounds(list, index))
-//         return NULL;
-//     t_double_l_node *temp = list_internal_get(list, index);
-//     return linked_list_remove_element(list,temp);
-// }
 
 static void linked_list_remove_element(t_linked_list *list, t_double_l_node *element)
 {
@@ -467,4 +473,52 @@ static void linked_list_remove_element(t_linked_list *list, t_double_l_node *ele
 static bool index_out_of_bounds(t_linked_list *list, int index)
 {
     return index >= linked_list_size(list) || index < 0;
+}
+
+static void adjust_tail(t_linked_list* list){
+    list->tail = list->head;
+    while (list->tail && list->tail->next) {
+        list->tail = list->tail->next;
+    }
+}
+
+static t_double_l_node* split_linked_list(t_double_l_node* head) {
+    t_double_l_node* slow = head;
+    t_double_l_node* fast = head;
+
+    while (fast && fast->next && fast->next->next) {
+        slow = slow->next;
+        fast = fast->next->next;
+    }
+
+    t_double_l_node* back = slow->next;
+    slow->next = NULL;
+    if (back) back->prev = NULL;
+    return back;
+}
+
+
+static t_double_l_node* merge_linked_lists(t_double_l_node* a,t_double_l_node* b, bool(*comparator)(void*, void*)){
+    if (!a) return b;
+    if (!b) return a;
+
+    if(comparator(a->data,b->data)){
+        // a before b
+        a->next = merge_linked_lists(a->next,b,comparator);
+        if(a->next) a->next->prev = a;
+        return a;
+    }
+    b->next = merge_linked_lists(a,b->next,comparator);
+    if(b->next) b->next->prev = b;
+    return b;
+}
+
+static t_double_l_node* merge_sort(t_double_l_node* head,bool(*comparator)(void*, void*)){
+    if(!head || !head->next) return head;
+
+    t_double_l_node* back = split_linked_list(head);
+    head = merge_sort(head,comparator);
+    back = merge_sort(back,comparator);
+
+    return merge_linked_lists(head,back,comparator);
 }

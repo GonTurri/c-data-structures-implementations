@@ -279,6 +279,23 @@ static void test_linked_list_map(void){
     remove_random_elements(list);
 }
 
+static bool compare_ints(void* a, void* b) {
+    return (*(int*)a < *(int*)b);
+}
+static void test_linked_list_sort(void){
+    add_random_elements(list);
+    linked_list_sort(list,compare_ints);
+    int* buf;
+    linked_list_get(list, 0, (void **)&buf);
+    CU_ASSERT_EQUAL(*buf, 1)
+    linked_list_get(list, 1, (void **)&buf);
+    CU_ASSERT_EQUAL(*buf, 3)
+    linked_list_get(list, 2, (void **)&buf);
+    CU_ASSERT_EQUAL(*buf, 5)
+    remove_random_elements(list);
+
+}
+
 static int init_linked_list(void)
 {
     list = linked_list_create();
@@ -310,5 +327,6 @@ CU_pSuite get_linked_list_suite(void)
     CU_add_test(suite, "test of linked_list_duplicate()", test_linked_list_duplicate);
     CU_add_test(suite, "test of linked_list_filter()", test_linked_list_filter);
     CU_add_test(suite, "test of linked_list_map()", test_linked_list_map);
+    CU_add_test(suite, "test of linked_list_sort()", test_linked_list_sort);
     return suite;
 }

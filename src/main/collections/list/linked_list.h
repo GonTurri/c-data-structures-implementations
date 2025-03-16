@@ -79,4 +79,6 @@ t_linked_list *linked_list_filter(t_linked_list *list, bool (*condition)(void *)
 
 t_linked_list* linked_list_map(t_linked_list* list, void*(*mapper)(void*));
 
+void linked_list_sort(t_linked_list* list, bool(*comparator)(void*, void*));
+
 #endif

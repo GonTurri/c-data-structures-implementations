@@ -230,7 +230,7 @@ static void test_linked_list_all_satisfy(void)
 static void test_linked_list_count(void)
 {
     add_random_elements(list);
-    CU_ASSERT_EQUAL(linked_list_count(list, should_not_all_satisfy_condition),2);
+    CU_ASSERT_EQUAL(linked_list_count(list, should_not_all_satisfy_condition), 2);
     remove_random_elements(list);
 }
 
@@ -265,18 +265,19 @@ static void test_linked_list_filter(void)
     remove_random_elements(list);
 }
 
-
-static void* new_plus_one(void* elem){
-    int* num = (int*) elem;
-    int* new = malloc(sizeof(int));
+static void *new_plus_one(void *elem)
+{
+    int *num = (int *)elem;
+    int *new = malloc(sizeof(int));
     *new = *num + 1;
     return new;
 }
 
-static void test_linked_list_map(void){
+static void test_linked_list_map(void)
+{
     add_random_elements(list);
-    t_linked_list* mapped = linked_list_map(list,new_plus_one);
-    int* buf;
+    t_linked_list *mapped = linked_list_map(list, new_plus_one);
+    int *buf;
     linked_list_get(mapped, 0, (void **)&buf);
     CU_ASSERT_EQUAL(*buf, 6)
     linked_list_get(mapped, 1, (void **)&buf);
@@ -286,13 +287,15 @@ static void test_linked_list_map(void){
     remove_random_elements(list);
 }
 
-static bool compare_ints(void* a, void* b) {
-    return (*(int*)a < *(int*)b);
+static bool compare_ints(void *a, void *b)
+{
+    return (*(int *)a < *(int *)b);
 }
-static void test_linked_list_sort(void){
+static void test_linked_list_sort(void)
+{
     add_random_elements(list);
-    linked_list_sort(list,compare_ints);
-    int* buf;
+    linked_list_sort(list, compare_ints);
+    int *buf;
     linked_list_get(list, 0, (void **)&buf);
     CU_ASSERT_EQUAL(*buf, 1)
     linked_list_get(list, 1, (void **)&buf);
@@ -300,13 +303,13 @@ static void test_linked_list_sort(void){
     linked_list_get(list, 2, (void **)&buf);
     CU_ASSERT_EQUAL(*buf, 5)
     remove_random_elements(list);
-
 }
 
-static void test_linked_list_sorted(void){
+static void test_linked_list_sorted(void)
+{
     add_random_elements(list);
-    t_linked_list* sorted =  linked_list_sorted(list,compare_ints);
-    int* buf;
+    t_linked_list *sorted = linked_list_sorted(list, compare_ints);
+    int *buf;
     linked_list_get(sorted, 0, (void **)&buf);
     CU_ASSERT_EQUAL(*buf, 1)
     linked_list_get(sorted, 1, (void **)&buf);
@@ -314,11 +317,10 @@ static void test_linked_list_sorted(void){
     linked_list_get(sorted, 2, (void **)&buf);
     CU_ASSERT_EQUAL(*buf, 5)
 
-    linked_list_get(list,0,(void**) &buf);
+    linked_list_get(list, 0, (void **)&buf);
     CU_ASSERT_EQUAL(*buf, 5)
     linked_list_destroy(sorted);
     remove_random_elements(list);
-
 }
 
 static int init_linked_list(void)

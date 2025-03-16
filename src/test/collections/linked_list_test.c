@@ -227,6 +227,13 @@ static void test_linked_list_all_satisfy(void)
     remove_random_elements(list);
 }
 
+static void test_linked_list_count(void)
+{
+    add_random_elements(list);
+    CU_ASSERT_EQUAL(linked_list_count(list, should_not_all_satisfy_condition),2);
+    remove_random_elements(list);
+}
+
 static void test_linked_list_duplicate(void)
 {
     add_random_elements(list);
@@ -342,6 +349,7 @@ CU_pSuite get_linked_list_suite(void)
     CU_add_test(suite, "test of linked_list_foreach()", test_linked_list_foreach);
     CU_add_test(suite, "test of linked_list_any_satisfy()", test_linked_list_any_satisfy);
     CU_add_test(suite, "test of linked_list_all_satisfy()", test_linked_list_all_satisfy);
+    CU_add_test(suite, "test of linked_list_count()", test_linked_list_count);
     CU_add_test(suite, "test of linked_list_duplicate()", test_linked_list_duplicate);
     CU_add_test(suite, "test of linked_list_filter()", test_linked_list_filter);
     CU_add_test(suite, "test of linked_list_map()", test_linked_list_map);

@@ -67,6 +67,8 @@ bool linked_list_any_satisfy(t_linked_list *list, bool (*condition)(void *));
 
 bool linked_list_all_satisfy(t_linked_list *list, bool (*condition)(void *));
 
+int linked_list_count(t_linked_list* list, bool(*condition)(void*));
+
 void linked_list_foreach(t_linked_list *list, void (*closure)(void *));
 
 void linked_list_destroy(t_linked_list *list);

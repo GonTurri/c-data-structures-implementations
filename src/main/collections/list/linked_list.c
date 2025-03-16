@@ -302,6 +302,17 @@ bool linked_list_any_satisfy(t_linked_list *list, bool (*condition)(void *))
     return list_internal_find(list, condition, NULL) == LIST_SUCCESS;
 }
 
+int linked_list_count(t_linked_list* list, bool(*condition)(void*)){
+    int cont = 0;
+    t_double_l_node* temp = list->head;
+    while(temp){
+        if(condition(temp->data))
+            cont++;
+        temp = temp->next;
+    }
+    return cont;
+}
+
 bool linked_list_all_satisfy(t_linked_list *list, bool (*condition)(void *))
 {
     t_double_l_node *temp = list->head;

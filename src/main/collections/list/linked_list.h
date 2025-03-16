@@ -35,6 +35,8 @@ void linked_list_add(t_linked_list *list, void *elem);
 
 void linked_list_add_first(t_linked_list *list, void *elem);
 
+int linked_list_add_sorted(t_linked_list *list, void *data, bool (*comparator)(void *, void *));
+
 void linked_list_add_all(t_linked_list *self, t_linked_list *other);
 
 t_list_error linked_list_add_to_index(t_linked_list *list, int index, void *elem);

@@ -26,6 +26,10 @@ static t_double_l_node *merge_linked_lists(t_double_l_node *a, t_double_l_node *
 
 static t_double_l_node *merge_sort(t_double_l_node *head, bool (*comparator)(void *, void *));
 
+static void add_element_in_front_of(t_linked_list* list, void* data, t_double_l_node* node);
+
+static void add_element_behind(t_linked_list* list, void* data, t_double_l_node* node);
+
 t_linked_list *linked_list_create(void)
 {
     t_linked_list *list = malloc(sizeof(t_linked_list));
@@ -78,22 +82,24 @@ void linked_list_add_first(t_linked_list *list, void *elem)
 
 t_list_error linked_list_add_to_index(t_linked_list *list, int index, void *elem)
 {
+    if(0 == index ){
+        linked_list_add_first(list,elem);
+        return LIST_SUCCESS;
+    }
+
+    if(index == (linked_list_size(list) - 1)){
+        linked_list_add(list,elem);
+        return LIST_SUCCESS;
+    }
+
+
     t_double_l_node *temp;
-    t_list_error err = list_internal_get(list, index, &temp);
+    t_list_error err = list_internal_get(list, index-1, &temp);
 
     if (err != LIST_SUCCESS)
         return err;
 
-    t_double_l_node *node = create_element(elem);
-
-    node->prev = temp;
-    node->next = temp->next;
-
-    temp->next = node;
-    if (node->next)
-    {
-        node->next->prev = node;
-    }
+    add_element_in_front_of(list,elem,temp);
 
     return err;
 }
@@ -108,6 +114,36 @@ void linked_list_add_all(t_linked_list *self, t_linked_list *other)
     }
 
     return;
+}
+
+int linked_list_add_sorted(t_linked_list *list, void *data, bool (*comparator)(void *, void *))
+{
+    int index = 0;
+    if (linked_list_is_empty(list))
+    {
+        linked_list_add_first(list, data);
+        return index;
+    }
+    t_double_l_node *temp = list->head;
+    while (temp)
+    {
+        if (!comparator(temp->data, data))
+        {
+            if (temp == list->head)
+            {
+                linked_list_add_first(list, data);
+                return index;
+            }
+            add_element_behind(list,data,temp);
+
+            return index;
+        }
+        temp = temp->next;
+        index++;
+    }
+
+    linked_list_add(list, data);
+    return index-1;
 }
 
 t_list_error linked_list_get(t_linked_list *list, int index, void **buffer)
@@ -450,6 +486,37 @@ static t_double_l_node *create_element(void *data)
 static void destroy_node(t_double_l_node *node)
 {
     free(node);
+}
+
+static void add_element_in_front_of(t_linked_list* list, void* data, t_double_l_node* node){
+    t_double_l_node *new = create_element(data);
+
+    new->prev = node;
+    new->next = node->next;
+
+    node->next = new;
+    if (new->next)
+    {
+        new->next->prev = new;
+    }
+
+    list->size++;
+}
+
+static void add_element_behind(t_linked_list* list, void* data, t_double_l_node* node){
+
+    t_double_l_node *new = create_element(data);
+    new->prev = node->prev;
+    new->next = node;
+
+    node->prev = new;
+
+    if (new->prev)
+    {
+        new->prev->next = new;
+    }
+
+    list->size++;
 }
 
 static void linked_list_remove_element(t_linked_list *list, t_double_l_node *element)

@@ -2,6 +2,12 @@
 
 static t_linked_list *list;
 
+
+static bool compare_ints(void *a, void *b)
+{
+    return (*(int *)a < *(int *)b);
+}
+
 static void add_random_elements(t_linked_list *list)
 {
     int *a = malloc(sizeof(int));
@@ -58,6 +64,37 @@ static void test_linked_list_add_first(void)
 
     remove_random_elements(list);
 }
+
+
+static void test_linked_list_add_to_index(void){
+    add_random_elements(list);
+
+    int* x = malloc(sizeof(int));
+    *x = 10;
+
+    linked_list_add_to_index(list,1,x);
+
+    CU_ASSERT_EQUAL(linked_list_size(list),4);
+
+    int* buf;
+    linked_list_get(list,1,(void**) &buf);
+    CU_ASSERT_EQUAL(*buf,10);
+
+    int* y = malloc(sizeof(int));
+    *y = 8;
+
+    linked_list_add_to_index(list,0,y);
+    CU_ASSERT_EQUAL(*(int*)list->head->data,8);
+
+    int* z = malloc(sizeof(int));
+    *z = 20;
+
+    linked_list_add_to_index(list,4,z);
+    CU_ASSERT_EQUAL(*(int*)list->tail->data,20);
+
+    remove_random_elements(list);
+}
+
 
 static void test_linked_list_add_all(void)
 {
@@ -287,10 +324,7 @@ static void test_linked_list_map(void)
     remove_random_elements(list);
 }
 
-static bool compare_ints(void *a, void *b)
-{
-    return (*(int *)a < *(int *)b);
-}
+
 static void test_linked_list_sort(void)
 {
     add_random_elements(list);
@@ -323,6 +357,39 @@ static void test_linked_list_sorted(void)
     remove_random_elements(list);
 }
 
+static void test_linked_list_add_sorted(void)
+{
+
+    int *buf;
+
+    int *x = malloc(sizeof(int));
+    *x = 4;
+
+    add_random_elements(list);
+
+    linked_list_sort(list,compare_ints);
+
+
+    int i = linked_list_add_sorted(list, x,compare_ints);
+
+
+    linked_list_get(list, 2, (void **)&buf);
+    CU_ASSERT_EQUAL(*buf, 4);
+    CU_ASSERT_EQUAL(i,2);
+
+    int* y = malloc(sizeof(int));
+    *y = 0;
+    linked_list_add_sorted(list,y,compare_ints);
+    CU_ASSERT_EQUAL(*(int*)list->head->data,0);
+
+    int* z = malloc(sizeof(int));
+    *z = 20;
+    linked_list_add_sorted(list,z,compare_ints);
+    CU_ASSERT_EQUAL(*(int*)list->tail->data,20);
+
+    remove_random_elements(list);
+}
+
 static int init_linked_list(void)
 {
     list = linked_list_create();
@@ -341,6 +408,7 @@ CU_pSuite get_linked_list_suite(void)
     CU_add_test(suite, "test of linked_list_add()", test_linked_list_add);
     CU_add_test(suite, "test of linked_list_add_first()", test_linked_list_add_first);
     CU_add_test(suite, "test of linked_list_add_all()", test_linked_list_add_all);
+    CU_add_test(suite, "test of linked_list_add_to_index()", test_linked_list_add_to_index);
     CU_add_test(suite, "test of linked_list_get() when index out of bounds", test_linked_list_get_errors);
     CU_add_test(suite, "test of linked_list_set()", test_linked_list_set);
     CU_add_test(suite, "test of linked_list_replace_by_condition()", test_linked_list_replace_by_condition);
@@ -357,5 +425,6 @@ CU_pSuite get_linked_list_suite(void)
     CU_add_test(suite, "test of linked_list_map()", test_linked_list_map);
     CU_add_test(suite, "test of linked_list_sort()", test_linked_list_sort);
     CU_add_test(suite, "test of linked_list_sorted()", test_linked_list_sorted);
+    CU_add_test(suite, "test of linked_list_add_sorted()", test_linked_list_add_sorted);
     return suite;
 }

@@ -426,9 +426,6 @@ t_linked_list *linked_list_sorted(t_linked_list *list, bool (*comparator)(void *
     return sorted;
 }
 
-t_linked_list *linked_list_take(t_linked_list *origin, int count)
-{
-}
 
 t_linked_list *linked_list_slice(t_linked_list *list, int start, int count)
 {
@@ -470,7 +467,16 @@ t_linked_list *linked_list_slice_and_remove(t_linked_list *list, int start, int 
     return result;
 }
 
-// slice and remove
+t_linked_list *linked_list_take(t_linked_list *origin, int count)
+{
+    return linked_list_slice(origin,0,count);
+}
+
+t_linked_list *linked_list_take_and_remove(t_linked_list *origin, int count)
+{
+    return linked_list_slice_and_remove(origin,0,count);
+}
+
 
 // take-drop
 

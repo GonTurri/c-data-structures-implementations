@@ -477,6 +477,22 @@ t_linked_list *linked_list_take_and_remove(t_linked_list *origin, int count)
     return linked_list_slice_and_remove(origin,0,count);
 }
 
+t_linked_list* linked_list_drop(t_linked_list* origin, int count){
+    if(count == 0) return linked_list_duplicate(origin);
+
+    return linked_list_slice(origin,count,linked_list_size(origin) - count);
+}
+
+t_linked_list* linked_list_drop_and_remove(t_linked_list* origin, int count){
+    if(count == 0){
+        t_linked_list* res =  linked_list_duplicate(origin);
+        linked_list_clean(origin);
+        return res;
+    } 
+
+    return linked_list_slice_and_remove(origin,count,linked_list_size(origin) - count);
+}
+
 
 // take-drop
 

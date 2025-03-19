@@ -419,7 +419,50 @@ static void test_linked_list_slice_and_remove(void)
     CU_ASSERT_EQUAL(*buf2, 5);
     CU_ASSERT_EQUAL(*buf3, 3);
     CU_ASSERT_EQUAL(*buf4, 1);
-    linked_list_destroy(sliced);
+    linked_list_destroy_and_destroy_elements(sliced, free);
+    remove_random_elements(list);
+}
+
+static void test_linked_list_drop(void)
+{
+    add_random_elements(list);
+    add_random_elements(list);
+
+    t_linked_list *drop = linked_list_drop(list, 3);
+    int *buf1, *buf2, *buf3;
+
+    linked_list_get(drop, 0, (void **)&buf1);
+    linked_list_get(drop, 1, (void **)&buf2);
+    linked_list_get(drop, 2, (void **)&buf3);
+
+    CU_ASSERT_EQUAL(linked_list_size(drop), 3);
+    CU_ASSERT_EQUAL(*buf1, 5);
+    CU_ASSERT_EQUAL(*buf2, 3);
+    CU_ASSERT_EQUAL(*buf3, 1);
+    linked_list_destroy(drop);
+    remove_random_elements(list);
+}
+
+static void test_linked_list_drop_and_remove(void)
+{
+    add_random_elements(list);
+    add_random_elements(list);
+
+    t_linked_list *drop = linked_list_drop_and_remove(list, 4);
+    int *buf1, *buf2, *buf3, *buf4;
+
+    linked_list_get(drop, 0, (void **)&buf1);
+    linked_list_get(drop, 1, (void **)&buf2);
+    linked_list_get(list, 0, (void **)&buf3);
+    linked_list_get(list, 1, (void **)&buf4);
+
+    CU_ASSERT_EQUAL(linked_list_size(drop), 2);
+    CU_ASSERT_EQUAL(linked_list_size(list), 4);
+    CU_ASSERT_EQUAL(*buf1, 3);
+    CU_ASSERT_EQUAL(*buf2, 1);
+    CU_ASSERT_EQUAL(*buf3, 5);
+    CU_ASSERT_EQUAL(*buf4, 3);
+    linked_list_destroy_and_destroy_elements(drop, free);
     remove_random_elements(list);
 }
 
@@ -461,5 +504,7 @@ CU_pSuite get_linked_list_suite(void)
     CU_add_test(suite, "test of linked_list_add_sorted()", test_linked_list_add_sorted);
     CU_add_test(suite, "test of linked_list_slice()", test_linked_list_slice);
     CU_add_test(suite, "test of linked_list_slice_and_remove()", test_linked_list_slice_and_remove);
+    CU_add_test(suite, "test of linked_list_drop()", test_linked_list_drop);
+    CU_add_test(suite, "test of linked_list_drop_and_remove()", test_linked_list_drop_and_remove);
     return suite;
 }

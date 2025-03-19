@@ -95,4 +95,8 @@ t_linked_list *linked_list_take(t_linked_list *origin, int count);
 
 t_linked_list *linked_list_take_and_remove(t_linked_list *origin, int count);
 
+t_linked_list* linked_list_drop(t_linked_list* origin, int count);
+
+t_linked_list* linked_list_drop_and_remove(t_linked_list* origin, int count);
+
 #endif

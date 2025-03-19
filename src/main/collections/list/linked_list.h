@@ -87,4 +87,8 @@ void linked_list_sort(t_linked_list *list, bool (*comparator)(void *, void *));
 
 t_linked_list *linked_list_sorted(t_linked_list *list, bool (*comparator)(void *, void *));
 
+t_linked_list* linked_list_slice(t_linked_list* list, int start, int count);
+
+t_linked_list* linked_list_slice_and_remove(t_linked_list* list, int start, int count);
+
 #endif

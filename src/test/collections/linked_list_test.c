@@ -2,7 +2,6 @@
 
 static t_linked_list *list;
 
-
 static bool compare_ints(void *a, void *b)
 {
     return (*(int *)a < *(int *)b);
@@ -65,36 +64,35 @@ static void test_linked_list_add_first(void)
     remove_random_elements(list);
 }
 
-
-static void test_linked_list_add_to_index(void){
+static void test_linked_list_add_to_index(void)
+{
     add_random_elements(list);
 
-    int* x = malloc(sizeof(int));
+    int *x = malloc(sizeof(int));
     *x = 10;
 
-    linked_list_add_to_index(list,1,x);
+    linked_list_add_to_index(list, 1, x);
 
-    CU_ASSERT_EQUAL(linked_list_size(list),4);
+    CU_ASSERT_EQUAL(linked_list_size(list), 4);
 
-    int* buf;
-    linked_list_get(list,1,(void**) &buf);
-    CU_ASSERT_EQUAL(*buf,10);
+    int *buf;
+    linked_list_get(list, 1, (void **)&buf);
+    CU_ASSERT_EQUAL(*buf, 10);
 
-    int* y = malloc(sizeof(int));
+    int *y = malloc(sizeof(int));
     *y = 8;
 
-    linked_list_add_to_index(list,0,y);
-    CU_ASSERT_EQUAL(*(int*)list->head->data,8);
+    linked_list_add_to_index(list, 0, y);
+    CU_ASSERT_EQUAL(*(int *)list->head->data, 8);
 
-    int* z = malloc(sizeof(int));
+    int *z = malloc(sizeof(int));
     *z = 20;
 
-    linked_list_add_to_index(list,4,z);
-    CU_ASSERT_EQUAL(*(int*)list->tail->data,20);
+    linked_list_add_to_index(list, 4, z);
+    CU_ASSERT_EQUAL(*(int *)list->tail->data, 20);
 
     remove_random_elements(list);
 }
-
 
 static void test_linked_list_add_all(void)
 {
@@ -324,7 +322,6 @@ static void test_linked_list_map(void)
     remove_random_elements(list);
 }
 
-
 static void test_linked_list_sort(void)
 {
     add_random_elements(list);
@@ -367,26 +364,62 @@ static void test_linked_list_add_sorted(void)
 
     add_random_elements(list);
 
-    linked_list_sort(list,compare_ints);
+    linked_list_sort(list, compare_ints);
 
-
-    int i = linked_list_add_sorted(list, x,compare_ints);
-
+    int i = linked_list_add_sorted(list, x, compare_ints);
 
     linked_list_get(list, 2, (void **)&buf);
     CU_ASSERT_EQUAL(*buf, 4);
-    CU_ASSERT_EQUAL(i,2);
+    CU_ASSERT_EQUAL(i, 2);
 
-    int* y = malloc(sizeof(int));
+    int *y = malloc(sizeof(int));
     *y = 0;
-    linked_list_add_sorted(list,y,compare_ints);
-    CU_ASSERT_EQUAL(*(int*)list->head->data,0);
+    linked_list_add_sorted(list, y, compare_ints);
+    CU_ASSERT_EQUAL(*(int *)list->head->data, 0);
 
-    int* z = malloc(sizeof(int));
+    int *z = malloc(sizeof(int));
     *z = 20;
-    linked_list_add_sorted(list,z,compare_ints);
-    CU_ASSERT_EQUAL(*(int*)list->tail->data,20);
+    linked_list_add_sorted(list, z, compare_ints);
+    CU_ASSERT_EQUAL(*(int *)list->tail->data, 20);
 
+    remove_random_elements(list);
+}
+
+static void test_linked_list_slice(void)
+{
+    add_random_elements(list);
+    add_random_elements(list);
+
+    t_linked_list *sliced = linked_list_slice(list, 2, 2);
+    int *buf, *buf2;
+    linked_list_get(sliced, 0, (void **)&buf);
+    linked_list_get(sliced, 1, (void **)&buf2);
+    CU_ASSERT_EQUAL(linked_list_size(sliced), 2);
+    CU_ASSERT_EQUAL(*buf, 1);
+    CU_ASSERT_EQUAL(*buf2, 5);
+    linked_list_destroy(sliced);
+    remove_random_elements(list);
+}
+
+static void test_linked_list_slice_and_remove(void)
+{
+    add_random_elements(list);
+    add_random_elements(list);
+
+    t_linked_list *sliced = linked_list_slice_and_remove(list, 2, 2);
+    int *buf, *buf2, *buf3, *buf4;
+    linked_list_get(sliced, 0, (void **)&buf);
+    linked_list_get(sliced, 1, (void **)&buf2);
+    linked_list_get(list, 2, (void **)&buf3);
+    linked_list_get(list, 3, (void **)&buf4);
+
+    CU_ASSERT_EQUAL(linked_list_size(sliced), 2);
+    CU_ASSERT_EQUAL(linked_list_size(list), 4);
+    CU_ASSERT_EQUAL(*buf, 1);
+    CU_ASSERT_EQUAL(*buf2, 5);
+    CU_ASSERT_EQUAL(*buf3, 3);
+    CU_ASSERT_EQUAL(*buf4, 1);
+    linked_list_destroy(sliced);
     remove_random_elements(list);
 }
 
@@ -426,5 +459,7 @@ CU_pSuite get_linked_list_suite(void)
     CU_add_test(suite, "test of linked_list_sort()", test_linked_list_sort);
     CU_add_test(suite, "test of linked_list_sorted()", test_linked_list_sorted);
     CU_add_test(suite, "test of linked_list_add_sorted()", test_linked_list_add_sorted);
+    CU_add_test(suite, "test of linked_list_slice()", test_linked_list_slice);
+    CU_add_test(suite, "test of linked_list_slice_and_remove()", test_linked_list_slice_and_remove);
     return suite;
 }

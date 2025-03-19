@@ -26,9 +26,9 @@ static t_double_l_node *merge_linked_lists(t_double_l_node *a, t_double_l_node *
 
 static t_double_l_node *merge_sort(t_double_l_node *head, bool (*comparator)(void *, void *));
 
-static void add_element_in_front_of(t_linked_list* list, void* data, t_double_l_node* node);
+static void add_element_in_front_of(t_linked_list *list, void *data, t_double_l_node *node);
 
-static void add_element_behind(t_linked_list* list, void* data, t_double_l_node* node);
+static void add_element_behind(t_linked_list *list, void *data, t_double_l_node *node);
 
 t_linked_list *linked_list_create(void)
 {
@@ -82,24 +82,25 @@ void linked_list_add_first(t_linked_list *list, void *elem)
 
 t_list_error linked_list_add_to_index(t_linked_list *list, int index, void *elem)
 {
-    if(0 == index ){
-        linked_list_add_first(list,elem);
+    if (0 == index)
+    {
+        linked_list_add_first(list, elem);
         return LIST_SUCCESS;
     }
 
-    if(index == (linked_list_size(list) - 1)){
-        linked_list_add(list,elem);
+    if (index == (linked_list_size(list) - 1))
+    {
+        linked_list_add(list, elem);
         return LIST_SUCCESS;
     }
-
 
     t_double_l_node *temp;
-    t_list_error err = list_internal_get(list, index-1, &temp);
+    t_list_error err = list_internal_get(list, index - 1, &temp);
 
     if (err != LIST_SUCCESS)
         return err;
 
-    add_element_in_front_of(list,elem,temp);
+    add_element_in_front_of(list, elem, temp);
 
     return err;
 }
@@ -134,7 +135,7 @@ int linked_list_add_sorted(t_linked_list *list, void *data, bool (*comparator)(v
                 linked_list_add_first(list, data);
                 return index;
             }
-            add_element_behind(list,data,temp);
+            add_element_behind(list, data, temp);
 
             return index;
         }
@@ -143,7 +144,7 @@ int linked_list_add_sorted(t_linked_list *list, void *data, bool (*comparator)(v
     }
 
     linked_list_add(list, data);
-    return index-1;
+    return index - 1;
 }
 
 t_list_error linked_list_get(t_linked_list *list, int index, void **buffer)
@@ -425,6 +426,57 @@ t_linked_list *linked_list_sorted(t_linked_list *list, bool (*comparator)(void *
     return sorted;
 }
 
+t_linked_list *linked_list_take(t_linked_list *origin, int count)
+{
+}
+
+t_linked_list *linked_list_slice(t_linked_list *list, int start, int count)
+{
+    t_linked_list *result = linked_list_create();
+    t_double_l_node *temp;
+    t_list_error err = list_internal_get(list, start, &temp);
+    if (err != LIST_SUCCESS)
+    {
+        return result;
+    }
+
+    for (int i = 0; i < count && temp; i++)
+    {
+        linked_list_add(result, temp->data);
+        temp = temp->next;
+    }
+
+    return result;
+}
+
+t_linked_list *linked_list_slice_and_remove(t_linked_list *list, int start, int count)
+{
+    t_linked_list *result = linked_list_create();
+    t_double_l_node *temp, *next;
+    t_list_error err = list_internal_get(list, start, &temp);
+    if (err != LIST_SUCCESS)
+    {
+        return result;
+    }
+
+    for (int i = 0; i < count && temp; i++)
+    {
+        linked_list_add(result, temp->data);
+        next = temp->next;
+        linked_list_remove_element(list, temp);
+        temp = next;
+    }
+
+    return result;
+}
+
+// slice and remove
+
+// take-drop
+
+// folds
+// min = max
+
 static t_double_l_node *list_traverse_forward(t_linked_list *list, int index)
 {
     t_double_l_node *temp = list->head;
@@ -488,7 +540,8 @@ static void destroy_node(t_double_l_node *node)
     free(node);
 }
 
-static void add_element_in_front_of(t_linked_list* list, void* data, t_double_l_node* node){
+static void add_element_in_front_of(t_linked_list *list, void *data, t_double_l_node *node)
+{
     t_double_l_node *new = create_element(data);
 
     new->prev = node;
@@ -503,7 +556,8 @@ static void add_element_in_front_of(t_linked_list* list, void* data, t_double_l_
     list->size++;
 }
 
-static void add_element_behind(t_linked_list* list, void* data, t_double_l_node* node){
+static void add_element_behind(t_linked_list *list, void *data, t_double_l_node *node)
+{
 
     t_double_l_node *new = create_element(data);
     new->prev = node->prev;

@@ -45,11 +45,11 @@ t_list_error linked_list_get(t_linked_list *list, int index, void **buffer);
 
 t_list_error linked_list_set(t_linked_list *list, int index, void *new_value, void **old_value);
 
-t_list_error linked_list_set_and_destroy_element(t_linked_list *list, int index, void *new_value, void (*destroyer)(void *));
+t_list_error linked_list_set_and_destroy_element(t_linked_list *list, int index, void *new_value, void (*element_destroyer)(void *));
 
 t_list_error linked_list_replace_by_condition(t_linked_list *list, bool (*condition)(void *), void *new_value, void **old_value);
 
-t_list_error linked_list_replace_and_destroy_by_condition(t_linked_list *list, bool (*condition)(void *), void *new_value, void (*destroyer)(void *));
+t_list_error linked_list_replace_and_destroy_by_condition(t_linked_list *list, bool (*condition)(void *), void *new_value, void (*element_destroyer)(void *));
 
 t_list_error linked_list_remove(t_linked_list *list, int index, void **buffer);
 
@@ -61,7 +61,7 @@ t_list_error linked_list_remove_and_destroy_by_condition(t_linked_list *list, bo
 
 void linked_list_clean(t_linked_list *list);
 
-void linked_list_clean_and_destroy_elements(t_linked_list *list, void (*destroyer)(void *));
+void linked_list_clean_and_destroy_elements(t_linked_list *list, void (*element_destroyer)(void *));
 
 t_list_error linked_list_find(t_linked_list *list, bool (*condition)(void *), void **buffer);
 
@@ -75,7 +75,7 @@ void linked_list_foreach(t_linked_list *list, void (*closure)(void *));
 
 void linked_list_destroy(t_linked_list *list);
 
-void linked_list_destroy_and_destroy_elements(t_linked_list *list, void (*destroyer)(void *));
+void linked_list_destroy_and_destroy_elements(t_linked_list *list, void (*element_destroyer)(void *));
 
 t_linked_list *linked_list_duplicate(t_linked_list *list);
 

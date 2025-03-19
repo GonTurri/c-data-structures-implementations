@@ -181,14 +181,14 @@ t_list_error linked_list_set(t_linked_list *list, int index, void *new_value, vo
     return result_error;
 }
 
-t_list_error linked_list_set_and_destroy_element(t_linked_list *list, int index, void *new_value, void (*destroyer)(void *))
+t_list_error linked_list_set_and_destroy_element(t_linked_list *list, int index, void *new_value, void (*element_destroyer)(void *))
 {
     void *old_value;
     t_list_error err = linked_list_set(list, index, new_value, &old_value);
     if (err != LIST_SUCCESS)
         return err;
 
-    destroyer(old_value);
+        element_destroyer(old_value);
 
     return err;
 }
@@ -209,14 +209,14 @@ t_list_error linked_list_replace_by_condition(t_linked_list *list, bool (*condit
     return result_error;
 }
 
-t_list_error linked_list_replace_and_destroy_by_condition(t_linked_list *list, bool (*condition)(void *), void *new_value, void (*destroyer)(void *))
+t_list_error linked_list_replace_and_destroy_by_condition(t_linked_list *list, bool (*condition)(void *), void *new_value, void (*element_destroyer)(void *))
 {
     void *old_value;
     t_list_error err = linked_list_replace_by_condition(list, condition, new_value, &old_value);
     if (err != LIST_SUCCESS)
         return err;
 
-    destroyer(old_value);
+        element_destroyer(old_value);
 
     return err;
 }
@@ -239,7 +239,7 @@ t_list_error linked_list_remove(t_linked_list *list, int index, void **buffer)
     return result_error;
 }
 
-t_list_error linked_list_remove_and_destroy(t_linked_list *list, int index, void (*destroyer)(void *))
+t_list_error linked_list_remove_and_destroy(t_linked_list *list, int index, void (*element_destroyer)(void *))
 {
     t_double_l_node *to_delete;
     t_list_error result_error = list_internal_get(list, index, &to_delete);
@@ -249,7 +249,7 @@ t_list_error linked_list_remove_and_destroy(t_linked_list *list, int index, void
 
     if (to_delete)
     {
-        destroyer(to_delete->data);
+        element_destroyer(to_delete->data);
         linked_list_remove_element(list, to_delete);
     }
 
@@ -277,7 +277,7 @@ t_list_error linked_list_remove_by_condition(t_linked_list *list, bool (*conditi
     return err;
 }
 
-t_list_error linked_list_remove_and_destroy_by_condition(t_linked_list *list, bool (*condition)(void *), void (*destroyer)(void *))
+t_list_error linked_list_remove_and_destroy_by_condition(t_linked_list *list, bool (*condition)(void *), void (*element_destroyer)(void *))
 {
 
     t_double_l_node *to_delete;
@@ -288,7 +288,7 @@ t_list_error linked_list_remove_and_destroy_by_condition(t_linked_list *list, bo
 
     if (to_delete)
     {
-        destroyer(to_delete->data);
+        element_destroyer(to_delete->data);
         linked_list_remove_element(list, to_delete);
     }
 
@@ -329,11 +329,11 @@ void linked_list_clean(t_linked_list *list)
     }
 }
 
-void linked_list_clean_and_destroy_elements(t_linked_list *list, void (*destroyer)(void *))
+void linked_list_clean_and_destroy_elements(t_linked_list *list, void (*element_destroyer)(void *))
 {
     while (linked_list_size(list) > 0)
     {
-        linked_list_remove_and_destroy(list, 0, destroyer);
+        linked_list_remove_and_destroy(list, 0, element_destroyer);
     }
 }
 
@@ -373,9 +373,9 @@ void linked_list_destroy(t_linked_list *list)
     free(list);
 }
 
-void linked_list_destroy_and_destroy_elements(t_linked_list *list, void (*destroyer)(void *))
+void linked_list_destroy_and_destroy_elements(t_linked_list *list, void (*element_destroyer)(void *))
 {
-    linked_list_clean_and_destroy_elements(list, destroyer);
+    linked_list_clean_and_destroy_elements(list, element_destroyer);
     free(list);
 }
 

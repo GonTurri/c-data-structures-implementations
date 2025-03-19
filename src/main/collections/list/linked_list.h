@@ -99,4 +99,8 @@ t_linked_list* linked_list_drop(t_linked_list* origin, int count);
 
 t_linked_list* linked_list_drop_and_remove(t_linked_list* origin, int count);
 
+void* linked_list_foldl(t_linked_list* list, void* seed, void*(*operation)(void*,void*));
+
+void* linked_list_foldl1(t_linked_list* list,void*(*operation)(void*,void*));
+
 #endif

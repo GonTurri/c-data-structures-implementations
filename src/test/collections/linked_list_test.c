@@ -466,6 +466,29 @@ static void test_linked_list_drop_and_remove(void)
     remove_random_elements(list);
 }
 
+static void* _sum(void* n1, void* n2){
+    int* a = n1;
+    int* b = n2;
+    *a += *b;
+    return a;
+}
+
+static void test_linked_list_foldl(void){
+    add_random_elements(list);
+    int* sum = linked_list_foldl(list,&(int){11},_sum);
+    CU_ASSERT_EQUAL(*sum,20);
+    remove_random_elements(list);
+
+}
+
+static void test_linked_list_foldl1(void){
+    add_random_elements(list);
+    int* sum = linked_list_foldl1(list,_sum);
+    CU_ASSERT_EQUAL(*sum,9);
+    remove_random_elements(list);
+
+}
+
 static int init_linked_list(void)
 {
     list = linked_list_create();
@@ -506,5 +529,7 @@ CU_pSuite get_linked_list_suite(void)
     CU_add_test(suite, "test of linked_list_slice_and_remove()", test_linked_list_slice_and_remove);
     CU_add_test(suite, "test of linked_list_drop()", test_linked_list_drop);
     CU_add_test(suite, "test of linked_list_drop_and_remove()", test_linked_list_drop_and_remove);
+    CU_add_test(suite, "test of linked_list_foldl()", test_linked_list_foldl);
+    CU_add_test(suite, "test of linked_list_foldl1()", test_linked_list_foldl1);
     return suite;
 }

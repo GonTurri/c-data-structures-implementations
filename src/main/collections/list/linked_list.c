@@ -30,6 +30,8 @@ static void add_element_in_front_of(t_linked_list *list, void *data, t_double_l_
 
 static void add_element_behind(t_linked_list *list, void *data, t_double_l_node *node);
 
+static void *linked_list_internal_foldl(t_double_l_node *head, void *seed, void *(*operation)(void *, void *));
+
 t_linked_list *linked_list_create(void)
 {
     t_linked_list *list = malloc(sizeof(t_linked_list));
@@ -426,7 +428,6 @@ t_linked_list *linked_list_sorted(t_linked_list *list, bool (*comparator)(void *
     return sorted;
 }
 
-
 t_linked_list *linked_list_slice(t_linked_list *list, int start, int count)
 {
     t_linked_list *result = linked_list_create();
@@ -469,32 +470,45 @@ t_linked_list *linked_list_slice_and_remove(t_linked_list *list, int start, int 
 
 t_linked_list *linked_list_take(t_linked_list *origin, int count)
 {
-    return linked_list_slice(origin,0,count);
+    return linked_list_slice(origin, 0, count);
 }
 
 t_linked_list *linked_list_take_and_remove(t_linked_list *origin, int count)
 {
-    return linked_list_slice_and_remove(origin,0,count);
+    return linked_list_slice_and_remove(origin, 0, count);
 }
 
-t_linked_list* linked_list_drop(t_linked_list* origin, int count){
-    if(count == 0) return linked_list_duplicate(origin);
+t_linked_list *linked_list_drop(t_linked_list *origin, int count)
+{
+    if (count == 0)
+        return linked_list_duplicate(origin);
 
-    return linked_list_slice(origin,count,linked_list_size(origin) - count);
+    return linked_list_slice(origin, count, linked_list_size(origin) - count);
 }
 
-t_linked_list* linked_list_drop_and_remove(t_linked_list* origin, int count){
-    if(count == 0){
-        t_linked_list* res =  linked_list_duplicate(origin);
+t_linked_list *linked_list_drop_and_remove(t_linked_list *origin, int count)
+{
+    if (count == 0)
+    {
+        t_linked_list *res = linked_list_duplicate(origin);
         linked_list_clean(origin);
         return res;
-    } 
+    }
 
-    return linked_list_slice_and_remove(origin,count,linked_list_size(origin) - count);
+    return linked_list_slice_and_remove(origin, count, linked_list_size(origin) - count);
 }
 
+void *linked_list_foldl(t_linked_list *list, void *seed, void *(*operation)(void *, void *))
+{
+    return linked_list_internal_foldl(list->head, seed, operation);
+}
 
-// take-drop
+void *linked_list_foldl1(t_linked_list *list, void *(*operation)(void *, void *))
+{
+    if (linked_list_size(list) == 0)
+        return NULL;
+    return linked_list_internal_foldl(list->head->next, list->head->data, operation);
+}
 
 // folds
 // min = max
@@ -695,4 +709,16 @@ static t_double_l_node *merge_sort(t_double_l_node *head, bool (*comparator)(voi
     back = merge_sort(back, comparator);
 
     return merge_linked_lists(head, back, comparator);
+}
+
+static void *linked_list_internal_foldl(t_double_l_node *head, void *seed, void *(*operation)(void *, void *))
+{
+    void *acc = seed;
+    while (head)
+    {
+        acc = operation(acc, head->data);
+        head = head->next;
+    }
+
+    return acc;
 }

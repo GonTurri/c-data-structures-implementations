@@ -103,4 +103,8 @@ void* linked_list_foldl(t_linked_list* list, void* seed, void*(*operation)(void*
 
 void* linked_list_foldl1(t_linked_list* list,void*(*operation)(void*,void*));
 
+void* linked_list_foldr(t_linked_list* list, void* seed, void*(*operation)(void*,void*));
+
+void* linked_list_foldr1(t_linked_list* list,void*(*operation)(void*,void*));
+
 #endif

@@ -32,6 +32,8 @@ static void add_element_behind(t_linked_list *list, void *data, t_double_l_node 
 
 static void *linked_list_internal_foldl(t_double_l_node *head, void *seed, void *(*operation)(void *, void *));
 
+static void *linked_list_internal_foldr(t_double_l_node *tail, void *seed, void *(*operation)(void *, void *));
+
 t_linked_list *linked_list_create(void)
 {
     t_linked_list *list = malloc(sizeof(t_linked_list));
@@ -510,6 +512,18 @@ void *linked_list_foldl1(t_linked_list *list, void *(*operation)(void *, void *)
     return linked_list_internal_foldl(list->head->next, list->head->data, operation);
 }
 
+void *linked_list_foldr(t_linked_list *list, void *seed, void *(*operation)(void *, void *))
+{
+    return linked_list_internal_foldr(list->tail, seed, operation);
+}
+
+void *linked_list_foldr1(t_linked_list *list, void *(*operation)(void *, void *))
+{
+    if (linked_list_size(list) == 0)
+        return NULL;
+    return linked_list_internal_foldr(list->tail->prev, list->tail->data, operation);
+}
+
 // folds
 // min = max
 
@@ -722,3 +736,16 @@ static void *linked_list_internal_foldl(t_double_l_node *head, void *seed, void 
 
     return acc;
 }
+
+static void *linked_list_internal_foldr(t_double_l_node *tail, void *seed, void *(*operation)(void *, void *))
+{
+    void *acc = seed;
+    while (tail)
+    {
+        acc = operation(tail->data, acc);
+        tail = tail->prev;
+    }
+
+    return acc;
+}
+

@@ -489,6 +489,20 @@ static void test_linked_list_foldl1(void){
 
 }
 
+static void* _subtract_nums(void* n2, void* n1){
+    int* a = n1;
+    int* b = n2;
+    *a -= *b;
+    return a;
+}
+
+static void test_linked_list_foldr(void){
+    add_random_elements(list);
+    int* res = linked_list_foldr1(list,_subtract_nums);
+    CU_ASSERT_EQUAL(*res,-7);
+    remove_random_elements(list);
+}
+
 static int init_linked_list(void)
 {
     list = linked_list_create();
@@ -531,5 +545,6 @@ CU_pSuite get_linked_list_suite(void)
     CU_add_test(suite, "test of linked_list_drop_and_remove()", test_linked_list_drop_and_remove);
     CU_add_test(suite, "test of linked_list_foldl()", test_linked_list_foldl);
     CU_add_test(suite, "test of linked_list_foldl1()", test_linked_list_foldl1);
+    CU_add_test(suite, "test of linked_list_foldr()", test_linked_list_foldr);
     return suite;
 }

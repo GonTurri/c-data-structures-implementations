@@ -3,8 +3,8 @@
 
 #include <CUnit/Basic.h>
 #include <CUnit/CUnit.h>
-#include "../../main/collections/queue/queue.h"
-#include "../../main/collections/stack/stack.h"
+#include "../../../main/collections/queue/queue.h"
+#include "../../../main/collections/stack/stack.h"
 
 CU_pSuite get_queue_stack_suite(void);
 

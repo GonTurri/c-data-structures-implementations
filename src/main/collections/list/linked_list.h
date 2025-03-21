@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdbool.h>
+#include "list_error.h"
 
 typedef struct
 {
@@ -12,14 +13,6 @@ typedef struct
     t_double_l_node *head;
     t_double_l_node *tail;
 } t_linked_list;
-
-typedef enum
-{
-    LIST_SUCCESS = 0,
-    // LIST_NULL_POINTER,
-    LIST_INDEX_OUT_OF_BOUNDS,
-    LIST_NOT_FOUND
-} t_list_error;
 
 // creation/deletion
 

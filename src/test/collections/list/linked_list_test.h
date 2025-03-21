@@ -3,7 +3,7 @@
 
 #include <CUnit/Basic.h>
 #include <CUnit/CUnit.h>
-#include "../../main/collections/list/linked_list.h"
+#include "../../../main/collections/list/linked_list.h"
 
 CU_pSuite get_linked_list_suite(void);
 

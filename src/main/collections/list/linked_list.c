@@ -73,12 +73,13 @@ void linked_list_add(t_linked_list *list, void *elem)
 
 void linked_list_add_first(t_linked_list *list, void *elem)
 {
+    if(linked_list_is_empty(list)){
+        linked_list_add(list,elem);
+        return;
+    }
     t_double_l_node *node = create_element(elem);
     node->next = list->head;
-    if (!linked_list_is_empty(list))
-    {
-        list->head->prev = node;
-    }
+    list->head->prev = node;
     list->head = node;
     list->size++;
     return;
@@ -188,7 +189,7 @@ t_list_error linked_list_set_and_destroy_element(t_linked_list *list, int index,
     if (err != LIST_SUCCESS)
         return err;
 
-        element_destroyer(old_value);
+    element_destroyer(old_value);
 
     return err;
 }
@@ -216,7 +217,7 @@ t_list_error linked_list_replace_and_destroy_by_condition(t_linked_list *list, b
     if (err != LIST_SUCCESS)
         return err;
 
-        element_destroyer(old_value);
+    element_destroyer(old_value);
 
     return err;
 }
@@ -321,18 +322,19 @@ t_list_error linked_list_find(t_linked_list *list, bool (*condition)(void *), vo
     return err;
 }
 
-int linked_list_index_of(t_linked_list* list, void* elem){
+int linked_list_index_of(t_linked_list *list, void *elem)
+{
     int index = 0;
-    t_double_l_node* temp = list->head;
+    t_double_l_node *temp = list->head;
     while (temp)
-    {  
-        if(temp->data == elem) return index;
+    {
+        if (temp->data == elem)
+            return index;
         temp = temp->next;
         index++;
     }
 
     return -1;
-    
 }
 
 void linked_list_clean(t_linked_list *list)
@@ -762,4 +764,3 @@ static void *linked_list_internal_foldr(t_double_l_node *tail, void *seed, void 
 
     return acc;
 }
-

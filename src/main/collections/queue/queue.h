@@ -10,7 +10,7 @@ typedef enum{
 
 
 typedef struct {
-    t_linked_list* elemets;
+    t_linked_list* elements;
 } t_queue;
 
 t_queue* queue_create(void);

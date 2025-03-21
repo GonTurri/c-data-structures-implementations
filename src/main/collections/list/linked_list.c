@@ -321,6 +321,20 @@ t_list_error linked_list_find(t_linked_list *list, bool (*condition)(void *), vo
     return err;
 }
 
+int linked_list_index_of(t_linked_list* list, void* elem){
+    int index = 0;
+    t_double_l_node* temp = list->head;
+    while (temp)
+    {  
+        if(temp->data == elem) return index;
+        temp = temp->next;
+        index++;
+    }
+
+    return -1;
+    
+}
+
 void linked_list_clean(t_linked_list *list)
 {
     while (linked_list_size(list) > 0)

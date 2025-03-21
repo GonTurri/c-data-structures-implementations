@@ -132,6 +132,23 @@ static void test_linked_list_find(void)
     remove_random_elements(list);
 }
 
+static void test_linked_list_index_of(void){
+    char* text1 = "hello", *text2 = "world", *text3="text";
+    linked_list_add(list,text1);
+    linked_list_add(list,text2);
+    linked_list_add(list,text3);
+
+    int i = linked_list_index_of(list,text2);
+
+    int not_found = linked_list_index_of(list,"jajajaj");
+
+    CU_ASSERT_EQUAL(i,1);
+    CU_ASSERT_EQUAL(not_found,-1);
+
+    linked_list_clean(list);
+
+}
+
 static void test_linked_list_find_not_found(void)
 {
     int *buf;
@@ -523,6 +540,7 @@ CU_pSuite get_linked_list_suite(void)
     CU_add_test(suite, "test of linked_list_add_all()", test_linked_list_add_all);
     CU_add_test(suite, "test of linked_list_add_to_index()", test_linked_list_add_to_index);
     CU_add_test(suite, "test of linked_list_get() when index out of bounds", test_linked_list_get_errors);
+    CU_add_test(suite, "test of linked_list_index_of()", test_linked_list_index_of);
     CU_add_test(suite, "test of linked_list_set()", test_linked_list_set);
     CU_add_test(suite, "test of linked_list_replace_by_condition()", test_linked_list_replace_by_condition);
     CU_add_test(suite, "test of linked_list_find() when found", test_linked_list_find);

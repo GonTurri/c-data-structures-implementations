@@ -10,12 +10,8 @@ static bool is_palindrome(char *word)
         return false;
     for (int i = 0; i < len; i++)
     {
-        char *x = malloc(sizeof(char));
-        *x = word[i];
-        char *y = malloc(sizeof(char));
-        *y = word[i];
-        stack_push(stack, x);
-        queue_push(queue, y);
+        stack_push(stack, &word[i]);
+        queue_push(queue, &word[i]);
     }
 
     while (!stack_is_empty(stack) && !queue_is_empty(queue))
@@ -24,8 +20,8 @@ static bool is_palindrome(char *word)
         queue_pop(queue, (void **)&b);
         if (*a != *b)
         {
-            stack_destroy_and_destroy_elements(stack, free);
-            queue_destroy_and_destroy_elements(queue, free);
+            stack_destroy(stack);
+            queue_destroy(queue);
             return false;
         }
     }

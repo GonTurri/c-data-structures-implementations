@@ -3,20 +3,23 @@
 
 #include <stdlib.h>
 #include "list_error.h"
+#include <string.h>
 #include <stdbool.h>
+#include <stdio.h>
 
 #define BASE_CAPACITY 10
+
+#define CAPACITY_MULTIPLIER 2
 
 typedef struct{
     unsigned int capacity;
     unsigned int element_count;
-    size_t element_size;
     void** array;
 } t_array_list;
 
-t_array_list* array_list_create(size_t element_size);
+t_array_list* array_list_create(void);
 
-t_array_list* array_list_create_with_capacity(size_t element_size,unsigned int capacity);
+t_array_list* array_list_create_with_capacity(unsigned int capacity);
 
 
 void array_list_foreach(t_array_list* self, void(*operation)(void*));
@@ -38,6 +41,8 @@ bool array_list_is_empty(t_array_list* self);
 t_list_error array_list_get(t_array_list* self, int index, void** out_buffer);
 
 void array_list_add(t_array_list* self, void* data);
+
+t_list_error array_list_add_to_index(t_array_list *self, int index, void *data);
 
 #endif
 

@@ -168,7 +168,7 @@ static void test_linked_list_get_errors(void)
 
     t_list_error err = linked_list_get(list, -1, (void **)&buf);
     CU_ASSERT_EQUAL(err, LIST_INDEX_OUT_OF_BOUNDS);
-    err = linked_list_get(list, 3, (void **)&buf);
+    err = linked_list_get(list, 4, (void **)&buf);
     CU_ASSERT_EQUAL(err, LIST_INDEX_OUT_OF_BOUNDS);
 
     remove_random_elements(list);

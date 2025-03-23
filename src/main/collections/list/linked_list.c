@@ -678,7 +678,7 @@ static void linked_list_remove_element(t_linked_list *list, t_double_l_node *ele
 
 static bool index_out_of_bounds(t_linked_list *list, int index)
 {
-    return index >= linked_list_size(list) || index < 0;
+    return index > linked_list_size(list) || index < 0;
 }
 
 static void adjust_tail(t_linked_list *list)

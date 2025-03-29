@@ -67,22 +67,22 @@ static void test_array_list_add_to_index(void)
     remove_random_ints();
 }
 
-static void test_array_list_remove(void){
+static void test_array_list_remove(void)
+{
     add_random_ints();
     add_random_ints();
-    int* deleted;
-    int *buf1, *buf2,*buf3;
-    array_list_remove(list,1,(void**) &deleted);
+    int *deleted;
+    int *buf1, *buf2, *buf3;
+    array_list_remove(list, 1, (void **)&deleted);
     array_list_get(list, 0, (void **)&buf1);
     array_list_get(list, 1, (void **)&buf2);
     array_list_get(list, 2, (void **)&buf3);
 
-    CU_ASSERT_EQUAL(array_list_size(list),3);
-    CU_ASSERT_EQUAL(*deleted,5);
-    CU_ASSERT_EQUAL(*buf1,10);
-    CU_ASSERT_EQUAL(*buf2,10);
-    CU_ASSERT_EQUAL(*buf3,5);
-
+    CU_ASSERT_EQUAL(array_list_size(list), 3);
+    CU_ASSERT_EQUAL(*deleted, 5);
+    CU_ASSERT_EQUAL(*buf1, 10);
+    CU_ASSERT_EQUAL(*buf2, 10);
+    CU_ASSERT_EQUAL(*buf3, 5);
 
     free(deleted);
     remove_random_ints();
@@ -108,12 +108,40 @@ static void test_array_list_resizing(void)
     array_list_destroy(arr);
 }
 
+static void test_array_list_remove_element(void)
+{
+    add_random_ints();
+    int *n = malloc(sizeof(int));
+    *n = 8;
+
+    array_list_add_to_index(list, 0, n);
+    int *buf1, *buf2;
+    int x = 10;
+
+    t_list_error success = array_list_remove_element(list, n);
+    printf("todo bien hasta aca\n");
+    t_list_error not_found = array_list_remove_element(list, &x);
+    array_list_get(list, 0, (void **)&buf1);
+    array_list_get(list, 1, (void **)&buf2);
+
+    CU_ASSERT_EQUAL(array_list_size(list), 2);
+    CU_ASSERT_EQUAL(success, LIST_SUCCESS);
+    CU_ASSERT_EQUAL(not_found, LIST_NOT_FOUND);
+    CU_ASSERT_EQUAL(*n, 8);
+    CU_ASSERT_EQUAL(*buf1, 10);
+    CU_ASSERT_EQUAL(*buf2, 5);
+
+    free(n);
+    remove_random_ints();
+}
+
 CU_pSuite get_array_list_suite(void)
 {
     CU_pSuite suite = CU_add_suite("Array list suite", init_suite, clean_suite);
     CU_add_test(suite, "Test of array list add with no resizing", test_array_list_add_no_resizing);
     CU_add_test(suite, "Test of array list add to and index with no resizing", test_array_list_add_to_index);
     CU_add_test(suite, "Test of array list add to and index with resizing", test_array_list_resizing);
-    CU_add_test(suite, "Test of array list remove", test_array_list_remove);
+    CU_add_test(suite, "Test of array list remove by index", test_array_list_remove);
+    CU_add_test(suite, "Test of array list remove by element", test_array_list_remove_element);
     return suite;
 }

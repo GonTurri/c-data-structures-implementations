@@ -48,4 +48,6 @@ t_list_error array_list_remove_and_destroy(t_array_list *self, int index, void (
 
 t_list_error array_list_remove_element(t_array_list *self, void *to_delete);
 
+//TODO: Implement all same methods as linked lists
+
 #endif

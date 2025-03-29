@@ -44,5 +44,8 @@ void array_list_add(t_array_list* self, void* data);
 
 t_list_error array_list_add_to_index(t_array_list *self, int index, void *data);
 
+
+t_list_error array_list_remove(t_array_list* self, int index,void** deleted);
+
 #endif
 

@@ -67,6 +67,27 @@ static void test_array_list_add_to_index(void)
     remove_random_ints();
 }
 
+static void test_array_list_remove(void){
+    add_random_ints();
+    add_random_ints();
+    int* deleted;
+    int *buf1, *buf2,*buf3;
+    array_list_remove(list,1,(void**) &deleted);
+    array_list_get(list, 0, (void **)&buf1);
+    array_list_get(list, 1, (void **)&buf2);
+    array_list_get(list, 2, (void **)&buf3);
+
+    CU_ASSERT_EQUAL(array_list_size(list),3);
+    CU_ASSERT_EQUAL(*deleted,5);
+    CU_ASSERT_EQUAL(*buf1,10);
+    CU_ASSERT_EQUAL(*buf2,10);
+    CU_ASSERT_EQUAL(*buf3,5);
+
+
+    free(deleted);
+    remove_random_ints();
+}
+
 static void test_array_list_resizing(void)
 {
     t_array_list *arr = array_list_create_with_capacity(2);
@@ -93,5 +114,6 @@ CU_pSuite get_array_list_suite(void)
     CU_add_test(suite, "Test of array list add with no resizing", test_array_list_add_no_resizing);
     CU_add_test(suite, "Test of array list add to and index with no resizing", test_array_list_add_to_index);
     CU_add_test(suite, "Test of array list add to and index with resizing", test_array_list_resizing);
+    CU_add_test(suite, "Test of array list remove", test_array_list_remove);
     return suite;
 }

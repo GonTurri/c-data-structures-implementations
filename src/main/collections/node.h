@@ -7,6 +7,13 @@ typedef struct double_l_node{
     struct double_l_node* prev;
 } t_double_l_node;
 
+typedef struct hash_element{
+    unsigned long hash;
+    char* key;
+    void* value;
+    struct hash_element* next;
+} t_hash_node;
+
 
 
 #endif

@@ -1,7 +1,7 @@
 #ifndef LINK_LIST_H_INCLUDED
 #define LINK_LIST_H_INCLUDED
 
-#include "node.h"
+#include "../node.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdbool.h>

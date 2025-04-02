@@ -136,7 +136,6 @@ t_list_error array_list_remove_element(t_array_list *self, void *to_delete)
     {
         if (self->array[i] == to_delete)
         {
-            printf("indice aca: %d\n", i);
             return remove_element(self, i, NULL, NULL);
         }
     }

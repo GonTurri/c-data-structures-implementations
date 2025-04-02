@@ -3,22 +3,27 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 #include "../node.h"
 
 #define MAP_INITIAL_CAPACITY 10
 #define DEFAULT_LOAD_FACTOR 0.7
 #define DEFAULT_CAPACITY_MULTIPLIER 2
 
+typedef  unsigned long (*t_hash_function)(const char*);
 
 typedef struct{
     int size;
     int capacity;
     double load_factor;
+    t_hash_function hash_function;
     t_hash_node** buckets;
 } t_hash_map;
 
 
 t_hash_map* hash_map_create(void);
+
+t_hash_map* hash_map_create_with_hash_function(t_hash_function hash_function);
 
 void hash_map_destroy(t_hash_map *self);
 

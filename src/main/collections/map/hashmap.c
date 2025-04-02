@@ -22,6 +22,14 @@ t_hash_map *hash_map_create(void)
     map->load_factor = 0;
     map->size = 0;
     map->buckets = calloc(map->capacity, sizeof(t_hash_node*));
+    map->hash_function = hash_djb2;
+    return map;
+}
+
+t_hash_map* hash_map_create_with_hash_function(t_hash_function hash_function){
+    t_hash_map* map = hash_map_create();
+    if(!map) return NULL;
+    map->hash_function = hash_function;
     return map;
 }
 
@@ -66,6 +74,7 @@ void hash_map_put(t_hash_map *self, char *key, void *data)
     // Resize if necessary
     if (self->load_factor > DEFAULT_LOAD_FACTOR) {
         resize(self, self->capacity * DEFAULT_CAPACITY_MULTIPLIER);
+        self->load_factor = calc_load_factor(self);
     }
 }
 
@@ -99,7 +108,7 @@ static double calc_load_factor(t_hash_map *map)
 
 static t_hash_node *find_node(t_hash_map *map, char *key, unsigned long *out_hash, int *out_index, t_hash_node **out_prev)
 {
-    unsigned long hash = hash_djb2(key);
+    unsigned long hash = map->hash_function(key);
     int index = hash % map->capacity;
 
     if (out_hash) *out_hash = hash;

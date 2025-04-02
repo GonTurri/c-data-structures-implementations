@@ -119,7 +119,6 @@ static void test_array_list_remove_element(void)
     int x = 10;
 
     t_list_error success = array_list_remove_element(list, n);
-    printf("todo bien hasta aca\n");
     t_list_error not_found = array_list_remove_element(list, &x);
     array_list_get(list, 0, (void **)&buf1);
     array_list_get(list, 1, (void **)&buf2);

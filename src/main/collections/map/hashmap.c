@@ -92,6 +92,17 @@ void hash_map_remove_and_destroy_element(t_hash_map* self, char* key, void(*elem
 }
 
 
+void hash_map_iterate(t_hash_map* map, void(*iterator)(char*,void*)){
+    t_hash_node* node = NULL;
+    for(int i =0; i< map->capacity; i++){
+        node = map->buckets[i];
+        while(node){
+            iterator(node->key,node->value);
+            node = node->next;
+        }
+    }
+}
+
 void hash_map_clean(t_hash_map* self){
     internal_hash_map_clean_and_destroy_elements(self,NULL);
 }

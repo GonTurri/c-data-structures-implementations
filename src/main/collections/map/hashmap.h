@@ -39,6 +39,8 @@ void* hash_map_get(t_hash_map* self, char* key);
 
 void* hash_map_remove(t_hash_map* self, char* key);
 
+void hash_map_iterate(t_hash_map* map, void(*iterator)(char*,void*));
+
 void hash_map_remove_and_destroy_element(t_hash_map* self, char* key, void(*element_destroyer)(void*));
 
 int hash_map_size(t_hash_map* self);

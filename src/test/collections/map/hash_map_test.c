@@ -126,6 +126,31 @@ static void test_map_collision(void){
     hash_map_destroy_and_destroy_elements(other,free);
 }
 
+
+static void multiply_if_key_is_even(char* key, void* data){
+    char* endptr;
+    long int num;
+    num = strtol(key,&endptr,10);
+    if(!(num % 2)){
+        int* x = (int*) data;
+        *x *=2;
+    }
+}
+static void test_hash_map_iterate(void){
+    int* n1= malloc(sizeof(int));
+    int* n2 = malloc(sizeof(int));
+    *n1 = 3;
+    *n2 = 5;
+    hash_map_put(map,"1",n1);
+    hash_map_put(map,"2",n2);
+    hash_map_iterate(map,multiply_if_key_is_even);
+
+    CU_ASSERT_EQUAL(*(int*)hash_map_get(map,"1"),3);
+    CU_ASSERT_EQUAL(*(int*)hash_map_get(map,"2"),10);
+
+    hash_map_clean_and_destroy_elements(map,free);
+}
+
 static int init_suite(void){
     map = hash_map_create();
     return 0;
@@ -143,6 +168,7 @@ CU_pSuite get_hash_map_suite(void){
     CU_add_test(suite,"Hash map test of remove",test_hash_map_remove);
     CU_add_test(suite,"Hash map test of resizing",test_hash_map_resizing);
     CU_add_test(suite,"Hash map test of collisions",test_map_collision);
+    CU_add_test(suite,"Hash map test of iterate",test_hash_map_iterate);
     return suite;
 }
 

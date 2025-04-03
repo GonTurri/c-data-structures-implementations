@@ -9,10 +9,13 @@
 
 typedef bool node_color;
 
+
+//same type as the key
 typedef bool (*t_comparator)(void *, void *);
 
 typedef struct node
 {
+    void* key;
     void *value;
     node_color color;
     struct node *left;

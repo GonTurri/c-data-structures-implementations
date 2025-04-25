@@ -4,6 +4,7 @@
 #include <CUnit/Basic.h>
 #include <CUnit/CUnit.h>
 #include "../../../main/collections/tree/red_black_tree.h"
+#include <stdio.h>
 
 CU_pSuite get_rb_tree_suite(void);
 

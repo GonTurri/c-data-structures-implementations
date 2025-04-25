@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
+#include <stdio.h>
 
 #define RED false
 #define BLACK true
@@ -46,6 +47,10 @@ bool rb_tree_find(t_rb_tree *tree, void *key, void **out);
 
 bool rb_tree_insert(t_rb_tree *tree, t_key key, void *value);
 
+bool rb_tree_remove(t_rb_tree* tree, void* key, void** out);
+
+bool rb_tree_remove_and_destroy(t_rb_tree* tree, void* key, void(*element_destroyer)(void*));
+
 void rb_tree_destroy(t_rb_tree *tree);
 
 void rb_tree_destroy_and_destroy_elements(t_rb_tree *tree, void (*element_destroyer)(void *));
@@ -53,5 +58,7 @@ void rb_tree_destroy_and_destroy_elements(t_rb_tree *tree, void (*element_destro
 void rb_tree_clear(t_rb_tree *tree);
 
 void rb_tree_clear_and_destroy_elements(t_rb_tree *tree, void (*element_destroyer)(void *));
+
+void rb_tree_iterate_preorder(t_rb_tree* tree, void(*iterator)(void* key,void* value));
 
 #endif

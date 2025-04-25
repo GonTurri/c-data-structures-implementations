@@ -30,19 +30,20 @@ static void test_rb_tree_insert(void)
     bool res2 = rb_tree_find(tree, &(int){1}, NULL);
     CU_ASSERT(res);
     CU_ASSERT_STRING_EQUAL("jorge", (char *)buf);
-    CU_ASSERT_EQUAL(rb_tree_size(tree),1);
+    CU_ASSERT_EQUAL(rb_tree_size(tree), 1);
     CU_ASSERT_FALSE(res2);
     rb_tree_clear(tree);
     CU_ASSERT_TRUE(rb_tree_is_empty(tree));
     free(key);
 }
 
-
-static void print_key(void* key, void* value){
-    printf("%d ; ",*(int*)key);
+static void print_key(void *key, void *value)
+{
+    printf("%d ; ", *(int *)key);
 }
 
-static void test_rb_tree_delete(void){
+static void test_rb_tree_delete(void)
+{
     rb_tree_insert(tree, (t_key){.size = sizeof(int), .data = &(int){4}}, "a");
     rb_tree_insert(tree, (t_key){.size = sizeof(int), .data = &(int){2}}, "a");
     rb_tree_insert(tree, (t_key){.size = sizeof(int), .data = &(int){6}}, "a");
@@ -53,30 +54,33 @@ static void test_rb_tree_delete(void){
     rb_tree_insert(tree, (t_key){.size = sizeof(int), .data = &(int){7}}, "a");
     rb_tree_insert(tree, (t_key){.size = sizeof(int), .data = &(int){9}}, "a");
 
-    CU_ASSERT_EQUAL(rb_tree_size(tree),9);
+    CU_ASSERT_EQUAL(rb_tree_size(tree), 9);
 
-    rb_tree_iterate_preorder(tree,print_key);
+    rb_tree_iterate_preorder(tree, print_key);
+    printf("\n");
 
-    char* temp;
+    char *temp;
 
-    bool deleted_success = rb_tree_remove(tree,&(int){6},(void**) &temp);
+    bool deleted_success = rb_tree_remove(tree, &(int){6}, (void **)&temp);
 
     CU_ASSERT_TRUE(deleted_success);
 
-    CU_ASSERT_EQUAL(rb_tree_size(tree),8);
+    CU_ASSERT_EQUAL(rb_tree_size(tree), 8);
 
-    CU_ASSERT_STRING_EQUAL(temp,"a");
+    CU_ASSERT_STRING_EQUAL(temp, "a");
 
-    rb_tree_iterate_preorder(tree,print_key);
+    // should be 4 ; 2 ; 1 ; 3 ; 7 ; 5 ; 8 ; 9
 
+    rb_tree_iterate_preorder(tree, print_key);
+    printf("\n");
+    rb_tree_clear(tree);
 }
-
 
 CU_pSuite get_rb_tree_suite(void)
 {
     CU_pSuite suite = CU_add_suite("Red black tree suite", init_suite, clean_suite);
     CU_add_test(suite, "red black tree, test of insert", test_rb_tree_insert);
-    //CU_add_test(suite, "red black tree, test of delete", test_rb_tree_delete);
+    CU_add_test(suite, "red black tree, test of delete", test_rb_tree_delete);
 
     return suite;
 }

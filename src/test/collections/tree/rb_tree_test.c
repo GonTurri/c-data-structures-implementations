@@ -32,12 +32,51 @@ static void test_rb_tree_insert(void)
     CU_ASSERT_STRING_EQUAL("jorge", (char *)buf);
     CU_ASSERT_EQUAL(rb_tree_size(tree),1);
     CU_ASSERT_FALSE(res2);
+    rb_tree_clear(tree);
+    CU_ASSERT_TRUE(rb_tree_is_empty(tree));
+    free(key);
 }
+
+
+static void print_key(void* key, void* value){
+    printf("%d ; ",*(int*)key);
+}
+
+static void test_rb_tree_delete(void){
+    rb_tree_insert(tree, (t_key){.size = sizeof(int), .data = &(int){4}}, "a");
+    rb_tree_insert(tree, (t_key){.size = sizeof(int), .data = &(int){2}}, "a");
+    rb_tree_insert(tree, (t_key){.size = sizeof(int), .data = &(int){6}}, "a");
+    rb_tree_insert(tree, (t_key){.size = sizeof(int), .data = &(int){1}}, "a");
+    rb_tree_insert(tree, (t_key){.size = sizeof(int), .data = &(int){3}}, "a");
+    rb_tree_insert(tree, (t_key){.size = sizeof(int), .data = &(int){5}}, "a");
+    rb_tree_insert(tree, (t_key){.size = sizeof(int), .data = &(int){8}}, "a");
+    rb_tree_insert(tree, (t_key){.size = sizeof(int), .data = &(int){7}}, "a");
+    rb_tree_insert(tree, (t_key){.size = sizeof(int), .data = &(int){9}}, "a");
+
+    CU_ASSERT_EQUAL(rb_tree_size(tree),9);
+
+    rb_tree_iterate_preorder(tree,print_key);
+
+    char* temp;
+
+    bool deleted_success = rb_tree_remove(tree,&(int){6},(void**) &temp);
+
+    CU_ASSERT_TRUE(deleted_success);
+
+    CU_ASSERT_EQUAL(rb_tree_size(tree),8);
+
+    CU_ASSERT_STRING_EQUAL(temp,"a");
+
+    rb_tree_iterate_preorder(tree,print_key);
+
+}
+
 
 CU_pSuite get_rb_tree_suite(void)
 {
     CU_pSuite suite = CU_add_suite("Red black tree suite", init_suite, clean_suite);
     CU_add_test(suite, "red black tree, test of insert", test_rb_tree_insert);
+    //CU_add_test(suite, "red black tree, test of delete", test_rb_tree_delete);
 
     return suite;
 }

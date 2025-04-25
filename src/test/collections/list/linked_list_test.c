@@ -182,11 +182,14 @@ static void test_linked_list_remove_by_index(void)
     linked_list_remove(list, 1, (void **)&buf);
     CU_ASSERT_EQUAL(*buf, 3);
     CU_ASSERT_EQUAL(linked_list_size(list), 2);
+    free(buf);
     linked_list_remove(list, 0, (void **)&buf);
     CU_ASSERT_EQUAL(*buf, 5);
+    free(buf);
     CU_ASSERT_EQUAL(linked_list_size(list), 1);
     linked_list_remove(list, 0, (void **)&buf);
     CU_ASSERT_EQUAL(*buf, 1);
+    free(buf);
     CU_ASSERT(linked_list_is_empty(list));
 }
 
@@ -234,9 +237,9 @@ static void test_linked_list_set(void)
     add_random_elements(list);
     linked_list_set(list, 0, x, (void **)&buf);
     CU_ASSERT_EQUAL(*buf, 5);
+    free(buf);
     CU_ASSERT(linked_list_get(list, 0, (void **)&buf) == LIST_SUCCESS);
     CU_ASSERT_EQUAL(*buf, 10);
-
     remove_random_elements(list);
 }
 
@@ -249,6 +252,7 @@ static void test_linked_list_replace_by_condition(void)
     linked_list_replace_by_condition(list, find_condition_success, x, (void **)&buf);
     CU_ASSERT_EQUAL(*buf, 1);
     CU_ASSERT(linked_list_find(list, find_condition_success, (void **)&buf) == LIST_NOT_FOUND);
+    free(buf);
     remove_random_elements(list);
 }
 
@@ -313,7 +317,7 @@ static void test_linked_list_filter(void)
     int *buf;
     linked_list_get(filter, 1, (void **)&buf);
     CU_ASSERT_EQUAL(*buf, 1)
-    linked_list_clean(list);
+    linked_list_destroy(filter);
     remove_random_elements(list);
 }
 
@@ -336,6 +340,7 @@ static void test_linked_list_map(void)
     CU_ASSERT_EQUAL(*buf, 4)
     linked_list_get(mapped, 2, (void **)&buf);
     CU_ASSERT_EQUAL(*buf, 2)
+    linked_list_destroy_and_destroy_elements(mapped,free);
     remove_random_elements(list);
 }
 

@@ -1,6 +1,7 @@
 # Compiler settings
 CC=gcc
 CFLAGS=-Wall -Wextra -Wpedantic
+DEBUG_FLAGS= -g
 
 # Libraries
 LIBS=-lm -lcunit
@@ -22,7 +23,7 @@ IDIRS := -Isrc -I$(shell brew --prefix cunit)/include
 $(shell mkdir -p bin)
 $(shell find src -type d | sed 's/src/obj/' | xargs mkdir -p)
 
-.PHONY: all clean
+.PHONY: all clean debug
 
 all: $(BIN)
 
@@ -32,6 +33,9 @@ $(BIN): $(OBJS)
 # Compile C files to object files, preserving directory structure
 obj/%.o: src/%.c $(SRCS_H)
 	$(CC) $(CFLAGS) -c -o $@ $< $(IDIRS)
+
+debug: CFLAGS += $(DEBUG_FLAGS)
+debug: all
 
 clean:
 	rm -rf obj bin
